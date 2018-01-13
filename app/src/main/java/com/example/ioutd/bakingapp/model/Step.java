@@ -17,9 +17,9 @@ public class Step {
     @ColumnInfo private int recipeID;
     @ColumnInfo private String shortDescription;
     @ColumnInfo private String description;
-    @ColumnInfo private URL videoURL;
+    @ColumnInfo private String videoURL;
 
-    public Step(int id, int recipeID, String shortDescription, String description, URL videoURL) {
+    public Step(int id, int recipeID, String shortDescription, String description, String videoURL) {
         this.id = id;
         this.recipeID = recipeID;
         this.shortDescription = shortDescription;
@@ -43,7 +43,27 @@ public class Step {
         return description;
     }
 
-    public URL getVideoURL() {
+    public String getVideoURL() {
         return videoURL;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setRecipeID(int recipeID) {
+        this.recipeID = recipeID;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setVideoURL(String videoURL) {
+        this.videoURL = videoURL;
     }
 }

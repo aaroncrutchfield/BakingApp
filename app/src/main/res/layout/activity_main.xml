@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<fragment
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_recipe_list"
-    android:name="com.example.ioutd.bakingapp.ui.RecipeListFragment"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    tools:context="com.example.ioutd.bakingapp.MainActivity">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_recipes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
+</android.support.constraint.ConstraintLayout>

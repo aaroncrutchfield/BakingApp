@@ -7,12 +7,16 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.ioutd.bakingapp.model.Recipe;
+import com.example.ioutd.bakingapp.utilities.JSONDataHandler;
 import com.example.ioutd.bakingapp.utilities.NetworkUtil;
 import com.example.ioutd.bakingapp.utilities.RecipeLoader;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
+import org.json.JSONException;
+
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
 
@@ -25,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
 
         String url = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
+//        String url = "https://api.themoviedb.org/3/movie/343611?api_key=35a2c8b5ef8960c539ecc989877bc80e&append_to_response=reviews";
 
         Bundle bundle = new Bundle();
         bundle.putString("request_url", url);
@@ -46,20 +51,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<String> loader, String data) {
-        // TODO: 1/13/2018 onLoadFinished() - do something with the JSON data being returned
-        //Convert the JSON to a POJO
-//        Moshi moshi = new Moshi.Builder().build();
-//        JsonAdapter<Recipe> jsonAdapter = moshi.adapter(Recipe.class);
-//        Recipe recipe = null;
-//        try {
-//            recipe = jsonAdapter.fromJson(data);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        Log.d(TAG, "onLoadFinished: recipe= " + recipe.toString());
 
-        Log.d(TAG, "onLoadFinished() returned: " + data);
+        ArrayList<Recipe> recipeArrayList = new ArrayList<>();
+        try {
+            recipeArrayList = JSONDataHandler.getRecipeArrayList(data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.d(TAG, "onLoadFinished() returned: " + recipeArrayList.toString());
     }
 
     @Override

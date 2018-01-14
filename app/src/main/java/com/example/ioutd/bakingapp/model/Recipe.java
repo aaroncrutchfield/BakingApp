@@ -24,10 +24,11 @@ public class Recipe implements Parcelable {
     @ColumnInfo private int servings;
     @ColumnInfo private String imageURL;
 
-    @Ignore private List<Ingredient> ingredients;
-    @Ignore private List<Step> steps;
+    @Ignore private ArrayList<Ingredient> ingredients;
+    @Ignore private ArrayList<Step> steps;
 
-    public Recipe(int id, String name, List<Ingredient> ingredients, int servings, List<Step> steps, String imageURL) {
+    // Default constructor
+    public Recipe(int id, String name, ArrayList<Ingredient> ingredients, int servings, ArrayList<Step> steps, String imageURL) {
         this.id = id;
         this.name = name;
         this.ingredients = ingredients;
@@ -36,6 +37,17 @@ public class Recipe implements Parcelable {
         this.imageURL = imageURL;
     }
 
+    // Builder constructor
+    private Recipe(Builder builder) {
+        setId(builder.id);
+        setName(builder.name);
+        setServings(builder.servings);
+        setImageURL(builder.imageURL);
+        setIngredients(builder.ingredients);
+        setSteps(builder.steps);
+    }
+
+    // Setters
     public void setId(int id) {
         this.id = id;
     }
@@ -52,14 +64,15 @@ public class Recipe implements Parcelable {
         this.imageURL = imageURL;
     }
 
-    public void setIngredients(List<Ingredient> ingredients) {
+    public void setIngredients(ArrayList<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public void setSteps(List<Step> steps) {
+    public void setSteps(ArrayList<Step> steps) {
         this.steps = steps;
     }
 
+    // Getters
     public int getId() {
         return id;
     }
@@ -84,6 +97,7 @@ public class Recipe implements Parcelable {
         return imageURL;
     }
 
+    // Parcelable logic
     @Override
     public int describeContents() {
         return 0;
@@ -110,7 +124,7 @@ public class Recipe implements Parcelable {
         in.readList(this.steps, Step.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<Recipe> CREATOR = new Parcelable.Creator<Recipe>() {
+    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
         @Override
         public Recipe createFromParcel(Parcel source) {
             return new Recipe(source);
@@ -121,4 +135,51 @@ public class Recipe implements Parcelable {
             return new Recipe[size];
         }
     };
+
+    // Builder logic
+    public static final class Builder {
+        private int id;
+        private String name;
+        private int servings;
+        private String imageURL;
+        private ArrayList<Ingredient> ingredients;
+        private ArrayList<Step> steps;
+
+        public Builder() {
+        }
+
+        public Builder id(int val) {
+            id = val;
+            return this;
+        }
+
+        public Builder name(String val) {
+            name = val;
+            return this;
+        }
+
+        public Builder servings(int val) {
+            servings = val;
+            return this;
+        }
+
+        public Builder imageURL(String val) {
+            imageURL = val;
+            return this;
+        }
+
+        public Builder ingredients(ArrayList<Ingredient> val) {
+            ingredients = val;
+            return this;
+        }
+
+        public Builder steps(ArrayList<Step> val) {
+            steps = val;
+            return this;
+        }
+
+        public Recipe build() {
+            return new Recipe(this);
+        }
+    }
 }

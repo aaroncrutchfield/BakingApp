@@ -35,9 +35,9 @@ public class RecipeLoader extends AsyncTaskLoader<String> {
                     .url(requestUrl)
                     .build();
 
+            Log.d(TAG, "loadInBackground: URL= " + requestUrl);
             Response response = client.newCall(request).execute();
 
-            Log.d(TAG, "doInBackground: response=" + response.body().toString());
             return response.body().string();
         } catch (IOException e) {
             e.printStackTrace();

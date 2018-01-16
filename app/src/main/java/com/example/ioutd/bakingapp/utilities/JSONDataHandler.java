@@ -92,7 +92,7 @@ public class JSONDataHandler {
             // get the steps array
             JSONArray JSONStepsArray = JSONRecipeObject.getJSONArray(STEPS);
             ArrayList<Step> stepArrayList = new ArrayList<>();
-            for (int k = 0; k < JSONIngredientsArray.length(); k++) {
+            for (int k = 0; k < JSONStepsArray.length(); k++) {
                 JSONObject JSONStepsObject = JSONStepsArray.getJSONObject(k);
 
                 int stepID = JSONStepsObject.getInt(ID);

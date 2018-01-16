@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<String> loader, String data) {
-
+        Log.d(TAG, "onLoadFinished: JSON=" + data);
         ArrayList<Recipe> recipeArrayList = new ArrayList<>();
         try {
             recipeArrayList = JSONDataHandler.getRecipeArrayList(data);

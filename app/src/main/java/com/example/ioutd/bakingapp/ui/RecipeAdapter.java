@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.model.Recipe;
+import com.example.ioutd.bakingapp.utilities.GoogleImageSearch;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -43,13 +44,23 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public void onBindViewHolder(RecipeViewHolder holder, int position) {
         Recipe recipe = recipesArray.get(position);
 
+        String recipeName = recipe.getName();
         // Set the recipe name
-        holder.tvRecipeName.setText(recipe.getName());
+        holder.tvRecipeName.setText(recipeName);
 
         String imageUrl = recipe.getImageURL();
         Log.d(TAG, "onBindViewHolder: imageUrl= " + imageUrl);
 
-        if (imageUrl == null || imageUrl.equals("") || imageUrl.equals(" ")) return;
+        if (imageUrl == null || imageUrl.equals("") || imageUrl.equals(" ")) {
+            // Build the google search string with the name
+            GoogleImageSearch.buildSearchString(recipeName, 1, 1);
+
+            // Query the api on the background
+
+            // Get the image URL
+
+            // Use this image URL to load an image with Picasso
+        }
 
         // Load the recipe image
         Picasso.with(context)

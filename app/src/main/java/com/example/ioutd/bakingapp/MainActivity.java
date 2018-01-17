@@ -5,21 +5,16 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.example.ioutd.bakingapp.model.Recipe;
 import com.example.ioutd.bakingapp.ui.RecipeAdapter;
 import com.example.ioutd.bakingapp.utilities.JSONDataHandler;
-import com.example.ioutd.bakingapp.utilities.NetworkUtil;
-import com.example.ioutd.bakingapp.utilities.RecipeLoader;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
+import com.example.ioutd.bakingapp.utilities.JSONResponseLoader;
 
 import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -56,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<String> onCreateLoader(int id, Bundle args) {
-        return new RecipeLoader(this, args);
+        return new JSONResponseLoader(this, args);
     }
 
     @Override

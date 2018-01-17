@@ -15,13 +15,13 @@ import okhttp3.Response;
  * Created by ioutd on 1/13/2018.
  */
 
-public class RecipeLoader extends AsyncTaskLoader<String> {
+public class JSONResponseLoader extends AsyncTaskLoader<String> {
 
-    private static String TAG = RecipeLoader.class.getSimpleName();
+    private static String TAG = JSONResponseLoader.class.getSimpleName();
 
     private String requestUrl;
 
-    public RecipeLoader(Context context, Bundle args) {
+    public JSONResponseLoader(Context context, Bundle args) {
         super(context);
         this.requestUrl = args.getString("request_url");
     }
@@ -44,4 +44,5 @@ public class RecipeLoader extends AsyncTaskLoader<String> {
             return null;
         }
     }
+
 }

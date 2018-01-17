@@ -42,10 +42,10 @@ public class JSONDataHandler {
     private static final String VIDEO_URL = "videoUrl";
     public static final String THUMBNAIL_URL = "thumbnailUrl";
 
-    public static ArrayList<Recipe> getRecipeArrayList (String jsonString) throws JSONException {
+    public static ArrayList<Recipe> getRecipeArrayList (JSONArray jsonArray) throws JSONException {
 
         // Convert the JSON String into a JSON Object.
-        JSONArray jsonArray = new JSONArray(jsonString);
+//        JSONArray jsonArray = new JSONArray(jsonString);
 
         //Create an ArrayList to hold all of the Recipe Objects
         ArrayList<Recipe> recipeArrayList = new ArrayList<>();

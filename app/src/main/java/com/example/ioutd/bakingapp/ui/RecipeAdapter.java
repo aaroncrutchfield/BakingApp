@@ -60,13 +60,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             // Get the image URL
 
             // Use this image URL to load an image with Picasso
-        }
+        } else {
 
-        // Load the recipe image
-        Picasso.with(context)
-                .load(imageUrl)
-                .fit()
-                .into(holder.ivRecipeImage);
+            // Load the recipe image
+            Picasso.with(context)
+                    .load(imageUrl)
+                    .fit()
+                    .into(holder.ivRecipeImage);
+        }
     }
 
     @Override

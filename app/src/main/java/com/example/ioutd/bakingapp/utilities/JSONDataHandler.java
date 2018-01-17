@@ -124,7 +124,7 @@ public class JSONDataHandler {
             recipeArrayList.add(recipe);
         }
 
-        Log.d(TAG, "getRecipeArrayList() returned: " + recipeArrayList);
+        Log.d(TAG, "getRecipeArrayList() returned size= " + recipeArrayList.size());
         return recipeArrayList;
     }
 

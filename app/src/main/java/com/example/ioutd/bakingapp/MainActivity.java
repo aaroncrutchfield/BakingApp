@@ -4,9 +4,13 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.example.ioutd.bakingapp.model.Recipe;
+import com.example.ioutd.bakingapp.ui.RecipeAdapter;
 import com.example.ioutd.bakingapp.utilities.JSONDataHandler;
 import com.example.ioutd.bakingapp.utilities.NetworkUtil;
 import com.example.ioutd.bakingapp.utilities.RecipeLoader;
@@ -18,18 +22,24 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
 
     public static final int RECIPE_LOADER = 1;
     private String TAG = MainActivity.class.getSimpleName();
 
+    @BindView(R.id.rv_recipes)
+    RecyclerView rvRecipes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         String url = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
-//        String url = "https://api.themoviedb.org/3/movie/343611?api_key=35a2c8b5ef8960c539ecc989877bc80e&append_to_response=reviews";
 
         Bundle bundle = new Bundle();
         bundle.putString("request_url", url);
@@ -60,6 +70,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         Log.d(TAG, "onLoadFinished() returned: " + recipeArrayList.toString());
+
+        //Setup the recyclerView and pass in the array of recipes
+        RecipeAdapter recipeAdapter = new RecipeAdapter(this, recipeArrayList);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+
+        rvRecipes.setLayoutManager(layoutManager);
+        rvRecipes.setAdapter(recipeAdapter);
     }
 
     @Override

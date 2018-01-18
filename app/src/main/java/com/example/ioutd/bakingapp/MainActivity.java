@@ -26,7 +26,6 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity{
 
-    public static final int RECIPE_LOADER = 1;
     private String TAG = MainActivity.class.getSimpleName();
 
     @BindView(R.id.rv_recipes)

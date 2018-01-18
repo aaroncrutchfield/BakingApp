@@ -9,10 +9,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.model.Recipe;
 import com.example.ioutd.bakingapp.utilities.GoogleImageSearch;
+import com.example.ioutd.bakingapp.utilities.ImageJSONHandler;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -22,7 +28,7 @@ import java.util.ArrayList;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
-    public static final String TAG = RecipeAdapter.class.getSimpleName();
+    private static final String TAG = RecipeAdapter.class.getSimpleName();
 
     private Context context;
     private ArrayList<Recipe> recipesArray;
@@ -41,33 +47,38 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     @Override
-    public void onBindViewHolder(RecipeViewHolder holder, int position) {
+    public void onBindViewHolder(final RecipeViewHolder holder, int position) {
         Recipe recipe = recipesArray.get(position);
 
         String recipeName = recipe.getName();
         // Set the recipe name
         holder.tvRecipeName.setText(recipeName);
 
-        String imageUrl = recipe.getImageURL();
-        Log.d(TAG, "onBindViewHolder: imageUrl= " + imageUrl);
+        String url = GoogleImageSearch.buildSearchString(recipeName, 1, 1);
 
-        if (imageUrl == null || imageUrl.equals("") || imageUrl.equals(" ")) {
-            // Build the google search string with the name
-            GoogleImageSearch.buildSearchString(recipeName, 1, 1);
+        // Query the api on the background
+        AndroidNetworking.get(url)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        String imageUrl = ImageJSONHandler.getImageUrl(response);
 
-            // Query the api on the background
+                        // In case there were no image results from Google
+                        if (imageUrl.equals("")) return;
 
-            // Get the image URL
+                        Picasso.with(context)
+                                .load(imageUrl)
+                                .fit()
+                                .into(holder.ivRecipeImage);
+                        Log.d(TAG, "onResponse: ran");
+                    }
 
-            // Use this image URL to load an image with Picasso
-        } else {
+                    @Override
+                    public void onError(ANError anError) {
 
-            // Load the recipe image
-            Picasso.with(context)
-                    .load(imageUrl)
-                    .fit()
-                    .into(holder.ivRecipeImage);
-        }
+                    }
+                });
     }
 
     @Override
@@ -78,15 +89,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             return recipesArray.size();
     }
 
-    public class RecipeViewHolder extends RecyclerView.ViewHolder {
+    class RecipeViewHolder extends RecyclerView.ViewHolder {
 
         ImageView ivRecipeImage;
         TextView tvRecipeName;
 
-        public RecipeViewHolder(View itemView) {
+        RecipeViewHolder(View itemView) {
             super(itemView);
             ivRecipeImage = itemView.findViewById(R.id.iv_recipe_image);
             tvRecipeName = itemView.findViewById(R.id.tv_recipe_name);
+
+            // TODO: 1/17/2018 RecipeViewHolder() - Implement onClick to start recipeDetailsActivity
         }
     }
 }

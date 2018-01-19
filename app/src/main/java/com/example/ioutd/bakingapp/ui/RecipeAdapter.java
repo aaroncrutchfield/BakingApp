@@ -1,6 +1,7 @@
 package com.example.ioutd.bakingapp.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.example.ioutd.bakingapp.R;
+import com.example.ioutd.bakingapp.RecipeDetailsActivity;
 import com.example.ioutd.bakingapp.model.Recipe;
 import com.example.ioutd.bakingapp.utilities.GoogleImageSearch;
 import com.example.ioutd.bakingapp.utilities.ImageJSONHandler;
@@ -91,6 +93,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     class RecipeViewHolder extends RecyclerView.ViewHolder {
 
+        public static final String RECIPE = "recipe";
+
         ImageView ivRecipeImage;
         TextView tvRecipeName;
 
@@ -99,7 +103,15 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             ivRecipeImage = itemView.findViewById(R.id.iv_recipe_image);
             tvRecipeName = itemView.findViewById(R.id.tv_recipe_name);
 
-            // TODO: 1/17/2018 RecipeViewHolder() - Implement onClick to start recipeDetailsActivity
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, RecipeDetailsActivity.class);
+
+                    intent.putExtra(RECIPE, recipesArray.get(getAdapterPosition()));
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }

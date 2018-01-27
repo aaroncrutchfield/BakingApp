@@ -38,11 +38,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     public void onBindViewHolder(IngredientsViewHolder holder, int position) {
         Ingredient ingredient = ingredientArrayList.get(position);
 
-        String ingredientString = ingredient.getQuantity()+ " " +
-                ingredient.getMeasurement().toString() + " " +
-                ingredient.getIngredient();
+        String measurementString = ingredient.getQuantity()+ " " +
+                ingredient.getMeasurement().toString();
 
-        holder.tvIngredient.setText(ingredientString);
+        holder.tvMeasurement.setText(measurementString);
+        holder.tvIngredient.setText(ingredient.getIngredient());
     }
 
     @Override
@@ -51,11 +51,13 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     }
 
     class IngredientsViewHolder extends RecyclerView.ViewHolder{
+        TextView tvMeasurement;
         TextView tvIngredient;
 
         public IngredientsViewHolder(View itemView) {
             super(itemView);
 
+            tvMeasurement = itemView.findViewById(R.id.tv_measurement);
             tvIngredient = itemView.findViewById(R.id.tv_ingredient);
         }
     }

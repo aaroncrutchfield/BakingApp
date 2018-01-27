@@ -37,7 +37,7 @@ public class JSONDataHandler {
     private static final String INGREDIENT = "ingredient";
 
     // Step properties
-    private static final String SHORT_DESCRIPION = "shortDescripion";
+    private static final String SHORT_DESCRIPION = "shortDescription";
     private static final String DESCRIPTION = "description";
     private static final String VIDEO_URL = "videoUrl";
     public static final String THUMBNAIL_URL = "thumbnailUrl";

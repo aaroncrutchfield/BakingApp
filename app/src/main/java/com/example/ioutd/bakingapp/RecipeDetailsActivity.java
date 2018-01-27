@@ -10,6 +10,7 @@ import com.example.ioutd.bakingapp.model.Ingredient;
 import com.example.ioutd.bakingapp.model.Recipe;
 import com.example.ioutd.bakingapp.model.Step;
 import com.example.ioutd.bakingapp.ui.IngredientsAdapter;
+import com.example.ioutd.bakingapp.ui.StepAdapter;
 
 import java.util.ArrayList;
 
@@ -19,8 +20,12 @@ import butterknife.ButterKnife;
 public class RecipeDetailsActivity extends AppCompatActivity {
 
     public static final String RECIPE = "recipe";
+
     @BindView(R.id.rv_ingredients)
     RecyclerView rvIngredients;
+
+    @BindView(R.id.rv_steps)
+    RecyclerView rvSteps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +37,18 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         Recipe recipe = intent.getParcelableExtra(RECIPE);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-
         ArrayList<Ingredient> ingredientArrayList = (ArrayList<Ingredient>) recipe.getIngredients();
-        IngredientsAdapter adapter = new IngredientsAdapter(this, ingredientArrayList);
+        LinearLayoutManager ingredientLayoutManager = new LinearLayoutManager(this);
+        IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(this, ingredientArrayList);
 
-        rvIngredients.setLayoutManager(layoutManager);
-        rvIngredients.setAdapter(adapter);
+        rvIngredients.setLayoutManager(ingredientLayoutManager);
+        rvIngredients.setAdapter(ingredientsAdapter);
+
+        ArrayList<Step> stepArrayList = (ArrayList<Step>) recipe.getSteps();
+        LinearLayoutManager stepLayoutManager = new LinearLayoutManager(this);
+        StepAdapter stepAdapter = new StepAdapter(this, stepArrayList);
+
+        rvSteps.setLayoutManager(stepLayoutManager);
+        rvSteps.setAdapter(stepAdapter);
     }
 }

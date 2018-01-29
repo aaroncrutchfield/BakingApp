@@ -1,6 +1,7 @@
 package com.example.ioutd.bakingapp;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,9 +34,13 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe_details);
         ButterKnife.bind(this);
 
+        ActionBar actionBar = getSupportActionBar();
+
         Intent intent = getIntent();
 
         Recipe recipe = intent.getParcelableExtra(RECIPE);
+
+        actionBar.setTitle(recipe.getName());
 
         ArrayList<Ingredient> ingredientArrayList = (ArrayList<Ingredient>) recipe.getIngredients();
         LinearLayoutManager ingredientLayoutManager = new LinearLayoutManager(this);

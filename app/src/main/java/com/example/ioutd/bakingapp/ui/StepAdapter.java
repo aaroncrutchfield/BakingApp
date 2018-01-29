@@ -1,6 +1,7 @@
 package com.example.ioutd.bakingapp.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ioutd.bakingapp.R;
+import com.example.ioutd.bakingapp.StepDetailsActivity;
 import com.example.ioutd.bakingapp.model.Step;
 
 import java.util.ArrayList;
@@ -55,10 +57,20 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         TextView tvStepId;
         TextView tvStepShortDescription;
 
-        public StepViewHolder(View itemView) {
+        StepViewHolder(View itemView) {
             super(itemView);
             tvStepId = itemView.findViewById(R.id.tv_step_id);
             tvStepShortDescription = itemView.findViewById(R.id.tv_step_short_description);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, StepDetailsActivity.class);
+                    intent.putExtra("step", stepArrayList.get(getAdapterPosition()));
+
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }

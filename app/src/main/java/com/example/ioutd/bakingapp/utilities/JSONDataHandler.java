@@ -39,7 +39,7 @@ public class JSONDataHandler {
     // Step properties
     private static final String SHORT_DESCRIPION = "shortDescription";
     private static final String DESCRIPTION = "description";
-    private static final String VIDEO_URL = "videoUrl";
+    private static final String VIDEO_URL = "videoURL";
     public static final String THUMBNAIL_URL = "thumbnailUrl";
 
     public static ArrayList<Recipe> getRecipeArrayList (JSONArray jsonArray) throws JSONException {
@@ -97,6 +97,8 @@ public class JSONDataHandler {
                 String description = JSONStepsObject.getString(DESCRIPTION);
                 String videoUrl = getStringIfNotNull(JSONStepsObject, VIDEO_URL);
 
+                Log.d(TAG, "getRecipeArrayList: videoUrl= " + videoUrl);
+
                 // Store step values in object
                 Step step = new Step.Builder()
                         .id(stepID)
@@ -107,6 +109,7 @@ public class JSONDataHandler {
 
                 // Add step object to an arraylist
                 stepArrayList.add(step);
+                Log.d(TAG, "getRecipeArrayList() returned stepArrayList.size= " + stepArrayList.size());
             }
 
             Recipe recipe = new Recipe.Builder()
@@ -121,7 +124,6 @@ public class JSONDataHandler {
             recipeArrayList.add(recipe);
         }
 
-        Log.d(TAG, "getRecipeArrayList() returned size= " + recipeArrayList.size());
         return recipeArrayList;
     }
 

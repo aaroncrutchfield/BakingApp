@@ -5,8 +5,9 @@
     android:layout_height="match_parent"
     tools:context="com.example.ioutd.bakingapp.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_recipes"
+    <fragment
+        android:id="@+id/recipe_list_fragment"
+        android:name="com.example.ioutd.bakingapp.ui.RecipeListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

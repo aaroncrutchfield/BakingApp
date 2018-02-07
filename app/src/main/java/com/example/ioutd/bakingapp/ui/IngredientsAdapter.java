@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.model.Ingredient;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ioutd on 1/18/2018.
@@ -19,11 +19,10 @@ import java.util.ArrayList;
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientsViewHolder> {
 
     private Context context;
-    private ArrayList<Ingredient> ingredientArrayList;
+    private List<Ingredient> ingredients;
 
-    public IngredientsAdapter(Context context, ArrayList<Ingredient> ingredientArrayList) {
+    public IngredientsAdapter(Context context) {
         this.context = context;
-        this.ingredientArrayList = ingredientArrayList;
     }
 
     @Override
@@ -36,10 +35,10 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     @Override
     public void onBindViewHolder(IngredientsViewHolder holder, int position) {
-        Ingredient ingredient = ingredientArrayList.get(position);
+        Ingredient ingredient = ingredients.get(position);
 
         String measurementString = ingredient.getQuantity()+ " " +
-                ingredient.getMeasurement().toString();
+                ingredient.getMeasure();
 
         holder.tvMeasurement.setText(measurementString);
         holder.tvIngredient.setText(ingredient.getIngredient());
@@ -47,7 +46,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     @Override
     public int getItemCount() {
-        return ingredientArrayList.size();
+        return ingredients.size();
+    }
+
+    public void addIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+        notifyDataSetChanged();
     }
 
     class IngredientsViewHolder extends RecyclerView.ViewHolder{

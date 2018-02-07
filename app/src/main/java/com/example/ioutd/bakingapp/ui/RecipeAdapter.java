@@ -22,7 +22,7 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ioutd on 1/11/2018.
@@ -33,11 +33,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     private static final String TAG = RecipeAdapter.class.getSimpleName();
 
     private Context context;
-    private ArrayList<Recipe> recipesArray;
+    private List<Recipe> recipes;
 
-    public RecipeAdapter(Context context, ArrayList<Recipe> recipesArray) {
+    public RecipeAdapter(Context context) {
         this.context = context;
-        this.recipesArray = recipesArray;
     }
 
     @Override
@@ -50,7 +49,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     @Override
     public void onBindViewHolder(final RecipeViewHolder holder, int position) {
-        Recipe recipe = recipesArray.get(position);
+        Recipe recipe = recipes.get(position);
 
         String recipeName = recipe.getName();
         // Set the recipe name
@@ -85,20 +84,26 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     @Override
     public int getItemCount() {
-        if (recipesArray == null)
+        if (recipes == null)
             return 0;
         else
-            return recipesArray.size();
+            return recipes.size();
+    }
+
+    public void addRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
+        notifyDataSetChanged();
     }
 
     class RecipeViewHolder extends RecyclerView.ViewHolder {
 
-        public static final String RECIPE = "recipe";
+        public static final String RECIPE_ID = "recipeID";
+        public static final String RECIPE_NAME = "recipeName";
 
         ImageView ivRecipeImage;
         TextView tvRecipeName;
 
-        RecipeViewHolder(View itemView) {
+        RecipeViewHolder(final View itemView) {
             super(itemView);
             ivRecipeImage = itemView.findViewById(R.id.iv_recipe_image);
             tvRecipeName = itemView.findViewById(R.id.tv_recipe_name);
@@ -107,8 +112,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, RecipeDetailsActivity.class);
+                    Recipe recipe = recipes.get(getAdapterPosition());
 
-                    intent.putExtra(RECIPE, recipesArray.get(getAdapterPosition()));
+                    int recipeID = recipe.getId();
+                    String recipeName = recipe.getName();
+
+                    intent.putExtra(RECIPE_ID, recipeID);
+                    intent.putExtra(RECIPE_NAME, recipeName);
+
                     context.startActivity(intent);
                 }
             });

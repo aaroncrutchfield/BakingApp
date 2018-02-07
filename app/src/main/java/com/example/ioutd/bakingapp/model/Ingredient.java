@@ -2,79 +2,67 @@ package com.example.ioutd.bakingapp.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 /**
  * Created by ioutd on 1/11/2018.
  */
-@Entity(foreignKeys = @ForeignKey(entity = Recipe.class,
-        parentColumns = "id",
-        childColumns = "recipeID"))
+@Entity
 public class Ingredient implements Parcelable {
 
-    public enum Measurement {
-        TBLSP, TSP, CUP, UNIT,
-        K, G, OZ
+    @PrimaryKey
+    @NonNull
+    private String ingredient;
+    @ColumnInfo (name = "recipeID")
+    private int recipeID;
+    @ColumnInfo private float quantity;
+    @ColumnInfo private String measure;
+
+    public Ingredient() {
     }
 
-
-    @ColumnInfo private int recipeID;
-    @ColumnInfo private String ingredient;
-    @ColumnInfo private int quantity;
-    @ColumnInfo private Measurement measurement;
-
-    // Default constructor
-    public Ingredient(String ingredient, int quantity, Measurement measurement) {
-        this.ingredient = ingredient;
-        this.quantity = quantity;
-        this.measurement = measurement;
-    }
-
-    // Builder constructor
-    private Ingredient(Builder builder) {
-        setRecipeID(builder.recipeID);
-        setIngredient(builder.ingredient);
-        setQuantity(builder.quantity);
-        setMeasurement(builder.measurement);
-    }
-
-    // Getters
     public int getRecipeID() {
         return recipeID;
+    }
+
+    public void setRecipeID(int recipeID) {
+        this.recipeID = recipeID;
     }
 
     public String getIngredient() {
         return ingredient;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public Measurement getMeasurement() {
-        return measurement;
-    }
-
-    // Setters
-    public void setRecipeID(int recipeID) {
-        this.recipeID = recipeID;
-    }
-
     public void setIngredient(String ingredient) {
         this.ingredient = ingredient;
     }
 
-    public void setQuantity(int quantity) {
+    public float getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(float quantity) {
         this.quantity = quantity;
     }
 
-    public void setMeasurement(Measurement measurement) {
-        this.measurement = measurement;
+    public String getMeasure() {
+        return measure;
     }
 
-    // Parcelable logic
+    public void setMeasure(String measure) {
+        this.measure = measure;
+    }
+
+    public String toString() {
+        return "recipeID= " + recipeID
+                + "\ningredient= " + ingredient;
+
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -84,16 +72,15 @@ public class Ingredient implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.recipeID);
         dest.writeString(this.ingredient);
-        dest.writeInt(this.quantity);
-        dest.writeInt(this.measurement == null ? -1 : this.measurement.ordinal());
+        dest.writeFloat(this.quantity);
+        dest.writeString(this.measure);
     }
 
     protected Ingredient(Parcel in) {
         this.recipeID = in.readInt();
         this.ingredient = in.readString();
-        this.quantity = in.readInt();
-        int tmpMeasurement = in.readInt();
-        this.measurement = tmpMeasurement == -1 ? null : Measurement.values()[tmpMeasurement];
+        this.quantity = in.readFloat();
+        this.measure = in.readString();
     }
 
     public static final Creator<Ingredient> CREATOR = new Creator<Ingredient>() {
@@ -107,39 +94,4 @@ public class Ingredient implements Parcelable {
             return new Ingredient[size];
         }
     };
-
-    // Builder logic
-    public static final class Builder {
-        private int recipeID;
-        private String ingredient;
-        private int quantity;
-        private Measurement measurement;
-
-        public Builder() {
-        }
-
-        public Builder recipeID(int val) {
-            recipeID = val;
-            return this;
-        }
-
-        public Builder ingredient(String val) {
-            ingredient = val;
-            return this;
-        }
-
-        public Builder quantity(int val) {
-            quantity = val;
-            return this;
-        }
-
-        public Builder measurement(Measurement val) {
-            measurement = val;
-            return this;
-        }
-
-        public Ingredient build() {
-            return new Ingredient(this);
-        }
-    }
 }

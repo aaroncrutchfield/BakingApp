@@ -5,14 +5,16 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 /**
  * Created by ioutd on 1/11/2018.
  */
 @Entity
 public class Step implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    private int stepID;
+    @PrimaryKey
+    @NonNull
+    private String stepID;
 
     @ColumnInfo
     private int id;
@@ -67,11 +69,11 @@ public class Step implements Parcelable {
         this.videoURL = videoURL;
     }
 
-    public int getStepID() {
+    public String getStepID() {
         return stepID;
     }
 
-    public void setStepID(int stepID) {
+    public void setStepID(String stepID) {
         this.stepID = stepID;
     }
 
@@ -90,7 +92,7 @@ public class Step implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.stepID);
+        dest.writeString(this.stepID);
         dest.writeInt(this.id);
         dest.writeInt(this.recipeID);
         dest.writeString(this.shortDescription);
@@ -99,7 +101,7 @@ public class Step implements Parcelable {
     }
 
     protected Step(Parcel in) {
-        this.stepID = in.readInt();
+        this.stepID = in.readString();
         this.id = in.readInt();
         this.recipeID = in.readInt();
         this.shortDescription = in.readString();

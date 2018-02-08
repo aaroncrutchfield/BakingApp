@@ -87,6 +87,9 @@ public class JSONDataUtil {
 
                 // Set the foreignKey recipeID
                 step.setRecipeID(recipe.getId());
+
+                String stepID = recipe.getId() + "-" + step.getId();
+                step.setStepID(stepID);
                 Log.d(TAG, "insertJSONtoDatabase: Step=\n" + step.toString());
                 stepArrayList.add(step);
             }

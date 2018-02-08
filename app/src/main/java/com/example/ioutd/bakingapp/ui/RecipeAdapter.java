@@ -35,7 +35,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     private Context context;
     private List<Recipe> recipes;
 
-    public RecipeAdapter(Context context) {
+    RecipeAdapter(Context context) {
         this.context = context;
     }
 
@@ -84,21 +84,19 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     @Override
     public int getItemCount() {
-        if (recipes == null)
-            return 0;
-        else
-            return recipes.size();
+        if (recipes == null) return 0;
+        return recipes.size();
     }
 
-    public void addRecipes(List<Recipe> recipes) {
+    void addRecipes(List<Recipe> recipes) {
         this.recipes = recipes;
         notifyDataSetChanged();
     }
 
     class RecipeViewHolder extends RecyclerView.ViewHolder {
 
-        public static final String RECIPE_ID = "recipeID";
-        public static final String RECIPE_NAME = "recipeName";
+        static final String RECIPE_ID = "recipeID";
+        static final String RECIPE_NAME = "recipeName";
 
         ImageView ivRecipeImage;
         TextView tvRecipeName;

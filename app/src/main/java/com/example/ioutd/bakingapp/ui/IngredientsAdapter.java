@@ -46,6 +46,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     @Override
     public int getItemCount() {
+        if (ingredients == null) return 0;
         return ingredients.size();
     }
 
@@ -58,7 +59,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         TextView tvMeasurement;
         TextView tvIngredient;
 
-        public IngredientsViewHolder(View itemView) {
+        IngredientsViewHolder(View itemView) {
             super(itemView);
 
             tvMeasurement = itemView.findViewById(R.id.tv_measurement);

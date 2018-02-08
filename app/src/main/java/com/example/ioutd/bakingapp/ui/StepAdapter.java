@@ -12,7 +12,7 @@ import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.StepDetailsActivity;
 import com.example.ioutd.bakingapp.model.Step;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ioutd on 1/25/2018.
@@ -20,11 +20,10 @@ import java.util.ArrayList;
 
 public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder> {
     private final Context context;
-    private ArrayList<Step> stepArrayList;
+    private List<Step> steps;
 
-    public StepAdapter(Context context, ArrayList<Step> stepArrayList){
+    public StepAdapter(Context context){
         this.context = context;
-        this.stepArrayList = stepArrayList;
     }
 
     @Override
@@ -37,7 +36,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
 
     @Override
     public void onBindViewHolder(StepViewHolder holder, int position) {
-        Step step = stepArrayList.get(position);
+        Step step = steps.get(position);
         if (position == 0) {
             holder.tvStepId.setText("");
         } else {
@@ -49,8 +48,13 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
 
     @Override
     public int getItemCount() {
-        if (stepArrayList == null) return 0;
-        return stepArrayList.size();
+        if (steps == null) return 0;
+        return steps.size();
+    }
+
+    public void addSteps(List<Step> steps) {
+        this.steps = steps;
+        notifyDataSetChanged();
     }
 
     class StepViewHolder extends RecyclerView.ViewHolder{
@@ -67,7 +71,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, StepDetailsActivity.class);
-                    intent.putExtra("step", stepArrayList.get(getAdapterPosition()));
+                    intent.putExtra("step", steps.get(getAdapterPosition()));
 
                     context.startActivity(intent);
                 }

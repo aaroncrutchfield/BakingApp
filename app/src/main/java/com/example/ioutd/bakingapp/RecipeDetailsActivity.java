@@ -16,8 +16,11 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.example.ioutd.bakingapp.data.AppDatabase;
 import com.example.ioutd.bakingapp.data.AppViewModel;
 import com.example.ioutd.bakingapp.model.Ingredient;
+import com.example.ioutd.bakingapp.model.Step;
 import com.example.ioutd.bakingapp.repositories.IngredientRepository;
+import com.example.ioutd.bakingapp.repositories.StepRepository;
 import com.example.ioutd.bakingapp.ui.IngredientsAdapter;
+import com.example.ioutd.bakingapp.ui.StepAdapter;
 import com.example.ioutd.bakingapp.utilities.GoogleImageSearch;
 import com.example.ioutd.bakingapp.utilities.ImageJSONHandler;
 import com.squareup.picasso.Picasso;
@@ -78,12 +81,19 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         rvIngredients.setLayoutManager(ingredientLayoutManager);
         rvIngredients.setAdapter(ingredientsAdapter);
 
-//        ArrayList<Step> stepArrayList = (ArrayList<Step>) recipe.getSteps();
         LinearLayoutManager stepLayoutManager = new LinearLayoutManager(this);
-//        StepAdapter stepAdapter = new StepAdapter(this, stepArrayList);
+        final StepAdapter stepAdapter = new StepAdapter(this);
+
+        StepRepository stepRepository = new StepRepository(appDatabase.stepDao());
+        viewModel.getStepsByRecipeID(stepRepository, recipeID).observe(this, new Observer<List<Step>>() {
+            @Override
+            public void onChanged(@Nullable List<Step> steps) {
+                stepAdapter.addSteps(steps);
+            }
+        });
 
         rvSteps.setLayoutManager(stepLayoutManager);
-//        rvSteps.setAdapter(stepAdapter);
+        rvSteps.setAdapter(stepAdapter);
 
         String url = GoogleImageSearch.buildSearchString(recipeName, 1, 1);
 

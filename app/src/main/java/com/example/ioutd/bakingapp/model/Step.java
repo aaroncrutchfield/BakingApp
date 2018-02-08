@@ -11,7 +11,7 @@ import android.support.annotation.NonNull;
  * Created by ioutd on 1/11/2018.
  */
 @Entity
-public class Step implements Parcelable {
+public class Step {
     @PrimaryKey
     @NonNull
     private String stepID;
@@ -84,40 +84,4 @@ public class Step implements Parcelable {
                 + "\nvideoURL= " + videoURL;
 
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.stepID);
-        dest.writeInt(this.id);
-        dest.writeInt(this.recipeID);
-        dest.writeString(this.shortDescription);
-        dest.writeString(this.description);
-        dest.writeString(this.videoURL);
-    }
-
-    protected Step(Parcel in) {
-        this.stepID = in.readString();
-        this.id = in.readInt();
-        this.recipeID = in.readInt();
-        this.shortDescription = in.readString();
-        this.description = in.readString();
-        this.videoURL = in.readString();
-    }
-
-    public static final Creator<Step> CREATOR = new Creator<Step>() {
-        @Override
-        public Step createFromParcel(Parcel source) {
-            return new Step(source);
-        }
-
-        @Override
-        public Step[] newArray(int size) {
-            return new Step[size];
-        }
-    };
 }

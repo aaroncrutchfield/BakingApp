@@ -71,7 +71,9 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, StepDetailsActivity.class);
-                    intent.putExtra("step", steps.get(getAdapterPosition()));
+
+                    Step step = steps.get(getAdapterPosition());
+                    intent.putExtra("stepID", step.getStepID());
 
                     context.startActivity(intent);
                 }

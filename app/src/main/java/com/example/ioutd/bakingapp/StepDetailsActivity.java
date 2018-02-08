@@ -1,16 +1,20 @@
 package com.example.ioutd.bakingapp;
 
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
+import com.example.ioutd.bakingapp.data.AppDatabase;
+import com.example.ioutd.bakingapp.data.AppViewModel;
 import com.example.ioutd.bakingapp.model.Step;
+import com.example.ioutd.bakingapp.repositories.StepRepository;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -44,35 +48,57 @@ public class StepDetailsActivity extends AppCompatActivity {
 
     SimpleExoPlayer exoPlayer;
 
+    ActionBar actionBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_details);
         ButterKnife.bind(this);
 
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
+
+        AppViewModel appViewModel = new AppViewModel();
+        AppDatabase appDatabase = AppDatabase.getAppDatabase(this);
+        StepRepository stepRepository = new StepRepository(appDatabase.stepDao());
+
 
         // Get the Step Object from the Intent
         Intent intent = getIntent();
-        Step step = intent.getParcelableExtra("step");
+        String stepID = intent.getStringExtra("stepID");
 
+
+        appViewModel.getStepByStepID(stepRepository, stepID).observe(this, new Observer<Step>() {
+            @Override
+            public void onChanged(@Nullable Step step) {
+                setupVideoPlayer(step);
+                Log.d(TAG, "onChanged: step=" + step.toString());
+            }
+        });
+
+
+    }
+
+    private void setupVideoPlayer(Step step) {
         String shortDescription = step.getShortDescription().replace(".", "");
         actionBar.setTitle(shortDescription);
 
         // Set default bitmap
-        Bitmap defaultBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_no_video);
-        epStepVideo.setDefaultArtwork(defaultBitmap);
+//        Bitmap defaultBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_background);
+//        epStepVideo.setDefaultArtwork(defaultBitmap);
 
         // Initialize the player and pass in the video url
         String url = step.getVideoURL();
         Log.d(TAG, ": url= " + url);
-
-        initializeExoPlayer(url);
+        if (url.equals("")){
+            epStepVideo.setVisibility(View.GONE);
+        } else {
+            initializeExoPlayer(url);
+        }
 
         // Set the text on the TextViews
         tvStepDescription.setText(step.getDescription());
         tvStepDetailId.setText(String.valueOf(step.getId()));
-
     }
 
     @Override

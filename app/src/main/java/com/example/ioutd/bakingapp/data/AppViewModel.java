@@ -37,4 +37,8 @@ public class AppViewModel extends ViewModel {
     public LiveData<List<Step>> getStepsByRecipeID(StepRepository stepRepository, long recipeID) {
         return stepRepository.getStepsByRecipeID(recipeID);
     }
+
+    public LiveData<Step> getStepByStepID(StepRepository stepRepository, String stepID) {
+        return stepRepository.getStepByStepID(stepID);
+    }
 }

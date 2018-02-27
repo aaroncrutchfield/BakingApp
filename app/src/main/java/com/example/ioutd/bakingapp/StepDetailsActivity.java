@@ -57,17 +57,22 @@ public class StepDetailsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         actionBar = getSupportActionBar();
-
-        AppViewModel appViewModel = new AppViewModel();
-        AppDatabase appDatabase = AppDatabase.getAppDatabase(this);
-        StepRepository stepRepository = new StepRepository(appDatabase.stepDao());
-
-
+        
         // Get the Step Object from the Intent
         Intent intent = getIntent();
         String stepID = intent.getStringExtra("stepID");
 
+        // Construct the ViewModel
+        AppViewModel appViewModel = new AppViewModel();
+        
+        // Get an instance of the Database
+        AppDatabase appDatabase = AppDatabase.getAppDatabase(this);
+        
+        // Pass the Dao to the Repository
+        StepRepository stepRepository = new StepRepository(appDatabase.stepDao());
 
+        // Use the ViewModel to observe any changes 
+        // onChanged, use the new data to setup the video player
         appViewModel.getStepByStepID(stepRepository, stepID).observe(this, new Observer<Step>() {
             @Override
             public void onChanged(@Nullable Step step) {

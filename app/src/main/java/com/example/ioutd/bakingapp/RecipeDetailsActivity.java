@@ -52,13 +52,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe_details);
         ButterKnife.bind(this);
         ActionBar actionBar = getSupportActionBar();
-
-        // Construct the ViewModel
-        AppViewModel viewModel = new AppViewModel();
-
-        // Get the app database
-        AppDatabase appDatabase = AppDatabase.getAppDatabase(this);
-
+        
         Intent intent = getIntent();
 
         // Don't use 0 as default value because it may actually exist
@@ -66,11 +60,21 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         String recipeName = intent.getStringExtra(RECIPE_NAME);
 
         actionBar.setTitle(recipeName);
-
+        
         LinearLayoutManager ingredientLayoutManager = new LinearLayoutManager(this);
         final IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(this);
 
+        // Construct the ViewModel
+        AppViewModel viewModel = new AppViewModel();
+
+        // Get an instance of the Database
+        AppDatabase appDatabase = AppDatabase.getAppDatabase(this);
+
+        // Pass the Dao to the Repository
         IngredientRepository ingredientRepository = new IngredientRepository(appDatabase.ingredientDao());
+        
+        // Use the ViewModel to observe any changes 
+        // onChanged, add the new data to the RecyclerView.Adapter
         viewModel.getIngredientsByRecipeID(ingredientRepository, recipeID).observe(this, new Observer<List<Ingredient>>() {
             @Override
             public void onChanged(@Nullable List<Ingredient> ingredients) {

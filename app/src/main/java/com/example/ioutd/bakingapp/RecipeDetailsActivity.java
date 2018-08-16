@@ -4,10 +4,12 @@ import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 
 import com.androidnetworking.AndroidNetworking;
@@ -51,7 +53,14 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
         ButterKnife.bind(this);
+        Toolbar toolbar = findViewById(R.id.recipe_toolbar);
+        setSupportActionBar(toolbar);
+
+        CollapsingToolbarLayout collapsingToolbarLayout = new CollapsingToolbarLayout(this);
+
         ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
         
         Intent intent = getIntent();
 
@@ -60,6 +69,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         String recipeName = intent.getStringExtra(RECIPE_NAME);
 
         actionBar.setTitle(recipeName);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         
         LinearLayoutManager ingredientLayoutManager = new LinearLayoutManager(this);
         final IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(this);

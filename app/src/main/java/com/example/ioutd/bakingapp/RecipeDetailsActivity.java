@@ -56,8 +56,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.recipe_toolbar);
         setSupportActionBar(toolbar);
 
-        CollapsingToolbarLayout collapsingToolbarLayout = new CollapsingToolbarLayout(this);
-
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);

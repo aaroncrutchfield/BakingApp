@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.example.ioutd.bakingapp.AppExecutors;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.data.AppDatabase;
 import com.example.ioutd.bakingapp.data.AppViewModel;
@@ -88,19 +89,16 @@ public class RecipeListFragment extends Fragment {
                 .getAsJSONArray(new JSONArrayRequestListener() {
                     @Override
                     public void onResponse(final JSONArray response) {
-                            new AsyncTask<Void, Void, Void>() {
-
-                                @Override
-                                protected Void doInBackground(Void... voids) {
-                        try {
+                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
                                     jsonDataUtil.insertJSONtoDatabase(context, response);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                                    return null;
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                            }.execute();
-
+                            }
+                        });
                     }
 
                     @Override

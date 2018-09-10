@@ -53,6 +53,7 @@ public class StepDetailsActivity extends AppCompatActivity {
 
     ActionBar actionBar;
     String stepID;
+    long contentPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,12 +82,14 @@ public class StepDetailsActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("step_id", stepID);
+        outState.putLong("content_position", contentPosition);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         stepID = savedInstanceState.getString("step_id");
+        contentPosition = savedInstanceState.getLong("content_position");
     }
 
     private void setupVideoPlayer() {
@@ -111,13 +114,6 @@ public class StepDetailsActivity extends AppCompatActivity {
                 Log.d(TAG, "onChanged: step=" + step.toString());
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-//        setupVideoPlayer();
-        // TODO: 1/29/2018 onStart() - initialize player with url
     }
 
     @Override
@@ -157,6 +153,7 @@ public class StepDetailsActivity extends AppCompatActivity {
 
             // Prepare the SimpleExoPlayer with the MediaSource and setPlayWhenReady = true
             exoPlayer.prepare(mediaSource);
+            exoPlayer.seekTo(contentPosition);
             exoPlayer.setPlayWhenReady(true);
         }
     }
@@ -169,6 +166,7 @@ public class StepDetailsActivity extends AppCompatActivity {
 
     private void releasePlayer() {
         if (exoPlayer != null) {
+            contentPosition = exoPlayer.getCurrentPosition();
             exoPlayer.release();
             exoPlayer = null;
         }

@@ -59,19 +59,13 @@ public class RecipeListFragment extends Fragment {
         rvRecipes.setAdapter(recipeAdapter);
         
         setupRecipesRecyclerView();
-        
+
         // Construct the ViewModel
-        AppViewModel viewModel = new AppViewModel();
-
-        // Get an instance of the Database
-        AppDatabase appDatabase = AppDatabase.getAppDatabase(getContext());
-
-        // Pass the Dao to the Repository
-        RecipeRepository recipeRepository = new RecipeRepository(appDatabase.recipeDao());
+        AppViewModel viewModel = new AppViewModel(getActivity().getApplication());
 
         // Use the ViewModel to observe any changes 
         // onChanged, add the new data to the RecyclerView.Adapter
-        viewModel.getRecipes(recipeRepository).observe(this, new Observer<List<Recipe>>() {
+        viewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(@Nullable List<Recipe> recipes) {
                 recipeAdapter.addRecipes(recipes);

@@ -1,7 +1,9 @@
 package com.example.ioutd.bakingapp.repositories;
 
+import android.app.Application;
 import android.arch.lifecycle.LiveData;
 
+import com.example.ioutd.bakingapp.data.AppDatabase;
 import com.example.ioutd.bakingapp.data.StepDao;
 import com.example.ioutd.bakingapp.model.Step;
 
@@ -14,8 +16,9 @@ import java.util.List;
 public class StepRepository {
     private final StepDao stepDao;
 
-    public StepRepository(StepDao stepDao) {
-        this.stepDao = stepDao;
+    public StepRepository(Application application) {
+        AppDatabase appDatabase = AppDatabase.getAppDatabase(application);
+        stepDao = appDatabase.stepDao();
     }
 
     public LiveData<List<Step>> getStepsByRecipeID(long recipeID) {

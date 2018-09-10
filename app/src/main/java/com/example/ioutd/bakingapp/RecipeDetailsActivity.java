@@ -15,12 +15,9 @@ import android.widget.ImageView;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.example.ioutd.bakingapp.data.AppDatabase;
 import com.example.ioutd.bakingapp.data.AppViewModel;
 import com.example.ioutd.bakingapp.model.Ingredient;
 import com.example.ioutd.bakingapp.model.Step;
-import com.example.ioutd.bakingapp.repositories.IngredientRepository;
-import com.example.ioutd.bakingapp.repositories.StepRepository;
 import com.example.ioutd.bakingapp.ui.IngredientsAdapter;
 import com.example.ioutd.bakingapp.ui.StepAdapter;
 import com.example.ioutd.bakingapp.utilities.GoogleImageSearch;
@@ -68,43 +65,34 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         actionBar.setTitle(recipeName);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        
-        LinearLayoutManager ingredientLayoutManager = new LinearLayoutManager(this);
+
         final IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(this);
 
         // Construct the ViewModel
-        AppViewModel viewModel = new AppViewModel();
+        AppViewModel viewModel = new AppViewModel(getApplication());
 
-        // Get an instance of the Database
-        AppDatabase appDatabase = AppDatabase.getAppDatabase(this);
-
-        // Pass the Dao to the Repository
-        IngredientRepository ingredientRepository = new IngredientRepository(appDatabase.ingredientDao());
-        
         // Use the ViewModel to observe any changes 
-        // onChanged, add the new data to the RecyclerView.Adapter
-        viewModel.getIngredientsByRecipeID(ingredientRepository, recipeID).observe(this, new Observer<List<Ingredient>>() {
+        // onChanged, add the new data to the RecyclerView.AdapteringredientRepository, recipeID
+        viewModel.getIngredientsByRecipeID(recipeID).observe(this, new Observer<List<Ingredient>>() {
             @Override
             public void onChanged(@Nullable List<Ingredient> ingredients) {
                 ingredientsAdapter.addIngredients(ingredients);
             }
         });
 
-        rvIngredients.setLayoutManager(ingredientLayoutManager);
+        rvIngredients.setLayoutManager(new LinearLayoutManager(this));
         rvIngredients.setAdapter(ingredientsAdapter);
 
-        LinearLayoutManager stepLayoutManager = new LinearLayoutManager(this);
         final StepAdapter stepAdapter = new StepAdapter(this);
 
-        StepRepository stepRepository = new StepRepository(appDatabase.stepDao());
-        viewModel.getStepsByRecipeID(stepRepository, recipeID).observe(this, new Observer<List<Step>>() {
+        viewModel.getStepsByRecipeID(recipeID).observe(this, new Observer<List<Step>>() {
             @Override
             public void onChanged(@Nullable List<Step> steps) {
                 stepAdapter.addSteps(steps);
             }
         });
 
-        rvSteps.setLayoutManager(stepLayoutManager);
+        rvSteps.setLayoutManager(new LinearLayoutManager(this));
         rvSteps.setAdapter(stepAdapter);
 
         String url = GoogleImageSearch.buildSearchString(recipeName, 1, 1);

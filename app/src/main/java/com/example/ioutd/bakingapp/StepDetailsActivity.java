@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -46,75 +47,83 @@ public class StepDetailsActivity extends AppCompatActivity {
     @BindView(R.id.tv_step_detail_id)
     TextView tvStepDetailId;
 
+    AppViewModel appViewModel;
+
     SimpleExoPlayer exoPlayer;
 
     ActionBar actionBar;
+    String stepID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_details);
         ButterKnife.bind(this);
+        Toolbar toolbar = findViewById(R.id.details_toolbar);
+        setSupportActionBar(toolbar);
 
         actionBar = getSupportActionBar();
-        
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         // Get the Step Object from the Intent
         Intent intent = getIntent();
-        String stepID = intent.getStringExtra("stepID");
+        // TODO: 9/10/18 onSavedInstanceState
+        stepID = intent.getStringExtra("stepID");
 
         // Construct the ViewModel
-        AppViewModel appViewModel = new AppViewModel();
-        
-        // Get an instance of the Database
-        AppDatabase appDatabase = AppDatabase.getAppDatabase(this);
-        
-        // Pass the Dao to the Repository
-        StepRepository stepRepository = new StepRepository(appDatabase.stepDao());
+        appViewModel = new AppViewModel(getApplication());
 
-        // Use the ViewModel to observe any changes 
-        // onChanged, use the new data to setup the video player
-        appViewModel.getStepByStepID(stepRepository, stepID).observe(this, new Observer<Step>() {
+        setupVideoPlayer();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("step_id", stepID);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        stepID = savedInstanceState.getString("step_id");
+    }
+
+    private void setupVideoPlayer() {
+        appViewModel.getStepByStepID(stepID).observe(this, new Observer<Step>() {
             @Override
             public void onChanged(@Nullable Step step) {
-                setupVideoPlayer(step);
+                String shortDescription = step.getShortDescription().replace(".", "");
+                actionBar.setTitle(shortDescription);
+
+                // Initialize the player and pass in the video url
+                String stepVideoURL = step.getVideoURL();
+                Log.d(TAG, ": url= " + stepVideoURL);
+                if (stepVideoURL.equals("")){
+                    epStepVideo.setVisibility(View.GONE);
+                } else {
+                    initializeExoPlayer(stepVideoURL);
+                }
+
+                // Set the text on the TextViews
+                tvStepDescription.setText(step.getDescription());
+                tvStepDetailId.setText(String.valueOf(step.getId()));
                 Log.d(TAG, "onChanged: step=" + step.toString());
             }
         });
-
-
-    }
-
-    private void setupVideoPlayer(Step step) {
-        String shortDescription = step.getShortDescription().replace(".", "");
-        actionBar.setTitle(shortDescription);
-
-        // Set default bitmap
-//        Bitmap defaultBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_background);
-//        epStepVideo.setDefaultArtwork(defaultBitmap);
-
-        // Initialize the player and pass in the video url
-        String url = step.getVideoURL();
-        Log.d(TAG, ": url= " + url);
-        if (url.equals("")){
-            epStepVideo.setVisibility(View.GONE);
-        } else {
-            initializeExoPlayer(url);
-        }
-
-        // Set the text on the TextViews
-        tvStepDescription.setText(step.getDescription());
-        tvStepDetailId.setText(String.valueOf(step.getId()));
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+//        setupVideoPlayer();
         // TODO: 1/29/2018 onStart() - initialize player with url
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        setupVideoPlayer();
         // TODO: 1/29/2018 onStart() - initialize player with url
     }
 
@@ -133,10 +142,10 @@ public class StepDetailsActivity extends AppCompatActivity {
     private void initializeExoPlayer(String url) {
         if (exoPlayer == null) {
             // Instantiate the SimpleExoPlayer and set the player on the SimpleExoPlayerView
-            TrackSelector trackSelector = new DefaultTrackSelector();
-            LoadControl loadControl = new DefaultLoadControl();
-            RenderersFactory renderersFactory = new DefaultRenderersFactory(this);
-            exoPlayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl);
+            exoPlayer = ExoPlayerFactory.newSimpleInstance(
+                    new DefaultRenderersFactory(this),
+                    new DefaultTrackSelector(),
+                    new DefaultLoadControl());
             epStepVideo.setPlayer(exoPlayer);
 
             // Prepare the MediaSource using a ExtractorMediaSource.Factory

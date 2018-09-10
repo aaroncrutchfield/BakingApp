@@ -1,7 +1,9 @@
 package com.example.ioutd.bakingapp.repositories;
 
+import android.app.Application;
 import android.arch.lifecycle.LiveData;
 
+import com.example.ioutd.bakingapp.data.AppDatabase;
 import com.example.ioutd.bakingapp.data.IngredientDao;
 import com.example.ioutd.bakingapp.model.Ingredient;
 
@@ -14,8 +16,9 @@ import java.util.List;
 public class IngredientRepository {
     private final IngredientDao ingredientDao;
 
-    public IngredientRepository(IngredientDao ingredientDao) {
-        this.ingredientDao = ingredientDao;
+    public IngredientRepository(Application application) {
+        AppDatabase appDatabase = AppDatabase.getAppDatabase(application);
+        ingredientDao = appDatabase.ingredientDao();
     }
 
     public LiveData<List<Ingredient>> getIngredientsByRecipeID(long recipeID) {

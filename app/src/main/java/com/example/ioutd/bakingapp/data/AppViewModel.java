@@ -1,7 +1,9 @@
 package com.example.ioutd.bakingapp.data;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
+import android.support.annotation.NonNull;
 
 import com.example.ioutd.bakingapp.model.Ingredient;
 import com.example.ioutd.bakingapp.model.Recipe;
@@ -16,29 +18,37 @@ import java.util.List;
  * Created by ioutd on 2/2/2018.
  */
 
-public class AppViewModel extends ViewModel {
+public class AppViewModel extends AndroidViewModel {
 
 
-    public AppViewModel() {
+    private final RecipeRepository recipeRepository;
+    private final IngredientRepository ingrdientRepository;
+    private final StepRepository stepRepository;
+
+    public AppViewModel(@NonNull Application application) {
+        super(application);
+        recipeRepository = new RecipeRepository(application);
+        ingrdientRepository = new IngredientRepository(application);
+        stepRepository = new StepRepository(application);
     }
 
-    public LiveData<List<Recipe>> getRecipes(RecipeRepository recipeRepository) {
+    public LiveData<List<Recipe>> getRecipes() {
         return recipeRepository.getAllRecipes();
     }
 
-    public LiveData<Recipe> getRecipeWithId(RecipeRepository recipeRepository, long id) {
+    public LiveData<Recipe> getRecipeWithId(long id) {
         return recipeRepository.getRecipeWithId(id);
     }
 
-    public LiveData<List<Ingredient>> getIngredientsByRecipeID(IngredientRepository ingredientRepository, long recipeID) {
-        return ingredientRepository.getIngredientsByRecipeID(recipeID);
+    public LiveData<List<Ingredient>> getIngredientsByRecipeID(long recipeID) {
+        return ingrdientRepository.getIngredientsByRecipeID(recipeID);
     }
 
-    public LiveData<List<Step>> getStepsByRecipeID(StepRepository stepRepository, long recipeID) {
+    public LiveData<List<Step>> getStepsByRecipeID(long recipeID) {
         return stepRepository.getStepsByRecipeID(recipeID);
     }
 
-    public LiveData<Step> getStepByStepID(StepRepository stepRepository, String stepID) {
+    public LiveData<Step> getStepByStepID(String stepID) {
         return stepRepository.getStepByStepID(stepID);
     }
 }

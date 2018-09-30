@@ -48,7 +48,7 @@ public class AppViewModel extends AndroidViewModel {
         return stepRepository.getStepsByRecipeID(recipeID);
     }
 
-    public LiveData<Step> getStepByStepID(String stepID) {
+    public LiveData<Step> getStepByStepID(int stepID) {
         return stepRepository.getStepByStepID(stepID);
     }
 }

@@ -14,7 +14,7 @@ import okhttp3.Response;
 /**
  * Created by ioutd on 1/13/2018.
  */
-
+// TODO: 9/14/18 Delete this file
 public class JSONResponseLoader extends AsyncTaskLoader<String> {
 
     private static String TAG = JSONResponseLoader.class.getSimpleName();

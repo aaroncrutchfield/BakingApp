@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ioutd.bakingapp.R;
+import com.example.ioutd.bakingapp.RecipeDetailsFragment.OnFragmentInteractionListener;
 import com.example.ioutd.bakingapp.StepDetailsActivity;
 import com.example.ioutd.bakingapp.model.Step;
 
@@ -20,10 +21,12 @@ import java.util.List;
 
 public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder> {
     private final Context context;
+    private final OnFragmentInteractionListener listener;
     private List<Step> steps;
 
-    public StepAdapter(Context context){
+    public StepAdapter(Context context, OnFragmentInteractionListener listener){
         this.context = context;
+        this.listener = listener;
     }
 
     @Override
@@ -73,9 +76,13 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
                     Intent intent = new Intent(context, StepDetailsActivity.class);
 
                     Step step = steps.get(getAdapterPosition());
-                    intent.putExtra("stepID", step.getStepID());
+                    int stepID = step.getStepID();
 
-                    context.startActivity(intent);
+                    listener.onFragmentInteraction(stepID);
+
+                    // TODO: 9/30/18 if onePane, launch StepDetailsActivity
+//                    intent.putExtra("stepID", step.getStepID());
+//                    context.startActivity(intent);
                 }
             });
         }

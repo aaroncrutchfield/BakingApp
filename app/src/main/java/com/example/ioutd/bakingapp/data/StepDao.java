@@ -25,5 +25,5 @@ public interface StepDao {
     LiveData<List<Step>> getStepsByRecipeID(long recipeID);
 
     @Query("SELECT * FROM step WHERE stepID=:stepID")
-    LiveData<Step> getStepByStepID(String stepID);
+    LiveData<Step> getStepByStepID(int stepID);
 }

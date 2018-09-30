@@ -13,7 +13,7 @@ import com.example.ioutd.bakingapp.model.Step;
  * Created by ioutd on 2/1/2018.
  */
 
-@Database(entities = {Recipe.class, Ingredient.class, Step.class}, version = 11)
+@Database(entities = {Recipe.class, Ingredient.class, Step.class}, version = 12)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase INSTANCE;

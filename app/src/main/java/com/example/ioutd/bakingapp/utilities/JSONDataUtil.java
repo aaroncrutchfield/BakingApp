@@ -58,7 +58,6 @@ public class JSONDataUtil {
             for (int j = 0; j < JSONIngredientsArray.length(); j++) {
                 JSONObject JSONIngredientsObject = JSONIngredientsArray.getJSONObject(j);
 
-                // TODO: 2/1/2018 insertJSONtoDatabase() - can the gson object be resused?
                 // Create the Ingredient object from the JSON string
                 Gson ingredientGson = new Gson();
                 Ingredient ingredient = ingredientGson
@@ -88,15 +87,29 @@ public class JSONDataUtil {
                 // Set the foreignKey recipeID
                 step.setRecipeID(recipe.getId());
 
-                String stepID = recipe.getId() + "-" + step.getId();
+                int stepID = formatStepID(step.getRecipeID(), step.getId());
                 step.setStepID(stepID);
                 Log.d(TAG, "insertJSONtoDatabase: Step=\n" + step.toString());
                 stepArrayList.add(step);
             }
+            // TODO: 9/14/18 Use the repo to insertAllSteps insted of the DAO directly
             // Insert all Steps into the DB
             appDatabase.stepDao().insertAllSteps(stepArrayList);
 
         }
         appDatabase.recipeDao().insertAllRecipes(recipeArrayList);
+    }
+
+    private int formatStepID(int recipeID, int stepID) {
+        int newID;
+        String stepIdString = String.valueOf(stepID);
+
+        if (stepIdString.length() == 1) {
+            newID = Integer.valueOf(recipeID + "0" + stepID);
+        } else {
+            newID = Integer.valueOf(recipeID + stepIdString);
+        }
+
+        return newID;
     }
 }

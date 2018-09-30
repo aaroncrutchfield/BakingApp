@@ -25,7 +25,7 @@ public class StepRepository {
         return stepDao.getStepsByRecipeID(recipeID);
     }
 
-    public LiveData<Step> getStepByStepID(String stepID) {
+    public LiveData<Step> getStepByStepID(int stepID) {
         return stepDao.getStepByStepID(stepID);
     }
 }

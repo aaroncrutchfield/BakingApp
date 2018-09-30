@@ -11,10 +11,10 @@ import android.support.annotation.NonNull;
  * Created by ioutd on 1/11/2018.
  */
 @Entity
-public class Step {
+public class Step implements Parcelable {
     @PrimaryKey
     @NonNull
-    private String stepID;
+    private int stepID;
 
     @ColumnInfo
     private int id;
@@ -69,11 +69,11 @@ public class Step {
         this.videoURL = videoURL;
     }
 
-    public String getStepID() {
+    public int getStepID() {
         return stepID;
     }
 
-    public void setStepID(String stepID) {
+    public void setStepID(int stepID) {
         this.stepID = stepID;
     }
 
@@ -81,7 +81,45 @@ public class Step {
         return "id= " + id
                 + "\nrecipeID= " + recipeID
                 + "\nshortDescription= " + shortDescription
-                + "\nvideoURL= " + videoURL;
+                + "\nvideoURL= " + videoURL
+                + "\nstepID= " + stepID;
 
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.stepID);
+        dest.writeInt(this.id);
+        dest.writeInt(this.recipeID);
+        dest.writeString(this.shortDescription);
+        dest.writeString(this.description);
+        dest.writeString(this.videoURL);
+    }
+
+    protected Step(Parcel in) {
+        this.stepID = in.readInt();
+        this.id = in.readInt();
+        this.recipeID = in.readInt();
+        this.shortDescription = in.readString();
+        this.description = in.readString();
+        this.videoURL = in.readString();
+    }
+
+    public static final Parcelable.Creator<Step> CREATOR = new Parcelable.Creator<Step>() {
+        @Override
+        public Step createFromParcel(Parcel source) {
+            return new Step(source);
+        }
+
+        @Override
+        public Step[] newArray(int size) {
+            return new Step[size];
+        }
+    };
 }

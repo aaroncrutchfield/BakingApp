@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.ioutd.bakingapp.RecipeDetailsActivity">
+    tools:context="com.example.ioutd.bakingapp.ui.RecipeDetailsActivity">
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline8"

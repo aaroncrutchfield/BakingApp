@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONArrayRequestListener;
-import com.example.ioutd.bakingapp.AppExecutors;
+import com.example.ioutd.bakingapp.utilities.AppExecutors;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.data.AppViewModel;
 import com.example.ioutd.bakingapp.model.Recipe;

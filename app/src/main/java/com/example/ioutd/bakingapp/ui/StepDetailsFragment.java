@@ -1,4 +1,4 @@
-package com.example.ioutd.bakingapp;
+package com.example.ioutd.bakingapp.ui;
 
 import android.content.Context;
 import android.net.Uri;
@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.model.Step;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;

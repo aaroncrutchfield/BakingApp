@@ -14,7 +14,6 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.example.ioutd.bakingapp.R;
-import com.example.ioutd.bakingapp.RecipeDetailsActivity;
 import com.example.ioutd.bakingapp.model.Recipe;
 import com.example.ioutd.bakingapp.utilities.GoogleImageSearch;
 import com.example.ioutd.bakingapp.utilities.ImageJSONHandler;

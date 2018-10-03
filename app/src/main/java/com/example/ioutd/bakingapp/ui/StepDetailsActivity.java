@@ -1,4 +1,4 @@
-package com.example.ioutd.bakingapp;
+package com.example.ioutd.bakingapp.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.data.AppViewModel;
 import com.example.ioutd.bakingapp.model.Step;
 
@@ -21,7 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-public class StepDetailsActivity extends AppCompatActivity implements StepDetailsFragment.OnFragmentInteractionListener{
+public class StepDetailsActivity extends AppCompatActivity implements StepDetailsFragment.OnFragmentInteractionListener {
 
     private static final String TAG = StepDetailsActivity.class.getSimpleName();
 

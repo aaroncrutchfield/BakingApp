@@ -9,8 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ioutd.bakingapp.R;
-import com.example.ioutd.bakingapp.RecipeDetailsFragment.OnFragmentInteractionListener;
-import com.example.ioutd.bakingapp.StepDetailsActivity;
+import com.example.ioutd.bakingapp.ui.RecipeDetailsFragment.OnFragmentInteractionListener;
 import com.example.ioutd.bakingapp.model.Step;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.ioutd.bakingapp;
+package com.example.ioutd.bakingapp.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -12,11 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.data.AppViewModel;
 import com.example.ioutd.bakingapp.model.Ingredient;
 import com.example.ioutd.bakingapp.model.Step;
-import com.example.ioutd.bakingapp.ui.IngredientsAdapter;
-import com.example.ioutd.bakingapp.ui.StepAdapter;
 
 import java.util.List;
 

@@ -11,26 +11,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RecipeDetailsActivity"
-            android:parentActivityName=".MainActivity"
+        <activity android:name=".ui.RecipeDetailsActivity"
+            android:parentActivityName=".ui.MainActivity"
             android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".ui.MainActivity"/>
         </activity>
-        <activity android:name=".StepDetailsActivity"
-            android:parentActivityName=".RecipeDetailsActivity"
+        <activity android:name=".ui.StepDetailsActivity"
+            android:parentActivityName=".ui.RecipeDetailsActivity"
             >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RecipeDetailsActivity"/>
+                android:value=".ui.RecipeDetailsActivity"/>
         </activity>
     </application>
 

@@ -6,16 +6,28 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.data.AppViewModel;
 import com.example.ioutd.bakingapp.model.Ingredient;
 import com.example.ioutd.bakingapp.model.Step;
+import com.example.ioutd.bakingapp.utilities.GoogleImageSearch;
+import com.example.ioutd.bakingapp.utilities.ImageJSONHandler;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -40,6 +52,12 @@ public class RecipeDetailsFragment extends Fragment {
 
     @BindView(R.id.rv_steps)
     RecyclerView rvSteps;
+
+    @BindView(R.id.iv_recipe_image)
+    ImageView ivRecipeImage;
+
+    @BindView(R.id.recipe_toolbar)
+    Toolbar tbRecipe;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -89,9 +107,47 @@ public class RecipeDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recipe_details, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
+//        if (appCompatActivity != null) {
+            appCompatActivity.setSupportActionBar(tbRecipe);
+            ActionBar actionBar = appCompatActivity.getSupportActionBar();
+//            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setTitle(recipeName);
+//            }
+//        }
+
+        getRecipeImage();
         setupRecyclerViews();
 
         return view;
+    }
+
+    public void getRecipeImage() {
+        String url = GoogleImageSearch.buildSearchString(recipeName, 1, 1);
+
+            // Query the api on the background
+            AndroidNetworking.get(url)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            String imageUrl = ImageJSONHandler.getImageUrl(response);
+
+                            // In case there were no image results from Google
+                            if (imageUrl.equals("") || ivRecipeImage == null) return;
+
+                            Picasso.with(getContext())
+                                    .load(imageUrl)
+                                    .fit()
+                                    .into(ivRecipeImage);
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+
+                        }
+                    });
     }
 
     private void setupRecyclerViews() {

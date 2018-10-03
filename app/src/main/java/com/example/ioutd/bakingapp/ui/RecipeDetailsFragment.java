@@ -108,14 +108,14 @@ public class RecipeDetailsFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
         AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
-//        if (appCompatActivity != null) {
+        if (appCompatActivity != null) {
             appCompatActivity.setSupportActionBar(tbRecipe);
             ActionBar actionBar = appCompatActivity.getSupportActionBar();
-//            if (actionBar != null) {
+            if (actionBar != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setTitle(recipeName);
-//            }
-//        }
+            }
+        }
 
         getRecipeImage();
         setupRecyclerViews();

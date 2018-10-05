@@ -75,7 +75,6 @@ public class RecipeListFragment extends Fragment {
     }
 
     private void setupRecipesRecyclerView() {
-        // TODO: 2/5/2018 setupRecipesRecyclerView() - move network call to a seperate class
         final JSONDataUtil jsonDataUtil = new JSONDataUtil();
         final Context context = getContext();
 

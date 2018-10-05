@@ -3,6 +3,7 @@ package com.example.ioutd.bakingapp.ui;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,6 +26,8 @@ import butterknife.Optional;
 public class StepDetailsActivity extends AppCompatActivity implements StepDetailsFragment.OnFragmentInteractionListener {
 
     private static final String TAG = StepDetailsActivity.class.getSimpleName();
+    public static final String STEP_ID = "stepID";
+    public static final String RECIPE_ID = "recipeID";
 
     ActionBar actionBar;
     int stepID;
@@ -45,7 +48,7 @@ public class StepDetailsActivity extends AppCompatActivity implements StepDetail
 
         // Get the Step Object from the Intent
         Intent intent = getIntent();
-        stepID = intent.getIntExtra("stepID", -1);
+        stepID = intent.getIntExtra(STEP_ID, -1);
 
         manager = getSupportFragmentManager();
 
@@ -118,15 +121,24 @@ public class StepDetailsActivity extends AppCompatActivity implements StepDetail
         onPrevious();
     }
 
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//
-//        int visibility = epStepVideo.getVisibility();
-//
-//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            epStepVideo.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-//        }
-//    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.d(TAG, "onConfigurationChanged: " + newConfig.orientation);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.d(TAG, "onConfigurationChanged: Landscape");
+            int recipeID = getRecipeID(stepID);
+
+            Intent intent = new Intent(this, RecipeDetailsActivity.class);
+            intent.putExtra(RECIPE_ID, recipeID);
+            intent.putExtra(STEP_ID, stepID);
+
+            startActivity(intent);
+        }
+    }
+
+    private int getRecipeID(int stepID) {
+        return stepID/100;
+    }
 
 }

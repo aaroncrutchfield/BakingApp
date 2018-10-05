@@ -151,6 +151,7 @@ public class StepDetailsFragment extends Fragment {
     }
 
     private void setupVideoPlayer() {
+        // TODO: 10/3/18 only change the ActionBar name of the StepDetailsFragment or Activity
                 String shortDescription = step.getShortDescription().replace(".", "");
                 ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
                 if (actionBar != null)
@@ -192,7 +193,6 @@ public class StepDetailsFragment extends Fragment {
             // Prepare the SimpleExoPlayer with the MediaSource and setPlayWhenReady = true
             exoPlayer.prepare(mediaSource);
             exoPlayer.seekTo(contentPosition);
-            exoPlayer.setPlayWhenReady(true);
         }
     }
 

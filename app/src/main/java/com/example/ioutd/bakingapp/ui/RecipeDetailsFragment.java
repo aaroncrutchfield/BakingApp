@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,30 +125,34 @@ public class RecipeDetailsFragment extends Fragment {
     }
 
     public void getRecipeImage() {
-        String url = GoogleImageSearch.buildSearchString(recipeName, 1, 1);
+        if (recipeName != null) {
+            String url = GoogleImageSearch.buildSearchString(recipeName, 1, 1);
+            Log.d("RecipeDetailsFragment", "getRecipeImage.url: " + url);
+            if (!url.equals("")) {
+                // Query the api on the background
+                AndroidNetworking.get(url)
+                        .build()
+                        .getAsJSONObject(new JSONObjectRequestListener() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                String imageUrl = ImageJSONHandler.getImageUrl(response);
 
-            // Query the api on the background
-            AndroidNetworking.get(url)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            String imageUrl = ImageJSONHandler.getImageUrl(response);
+                                // In case there were no image results from Google
+                                if (imageUrl.equals("") || ivRecipeImage == null) return;
 
-                            // In case there were no image results from Google
-                            if (imageUrl.equals("") || ivRecipeImage == null) return;
+                                Picasso.with(getContext())
+                                        .load(imageUrl)
+                                        .fit()
+                                        .into(ivRecipeImage);
+                            }
 
-                            Picasso.with(getContext())
-                                    .load(imageUrl)
-                                    .fit()
-                                    .into(ivRecipeImage);
-                        }
+                            @Override
+                            public void onError(ANError anError) {
 
-                        @Override
-                        public void onError(ANError anError) {
-
-                        }
-                    });
+                            }
+                        });
+            }
+        }
     }
 
     private void setupRecyclerViews() {

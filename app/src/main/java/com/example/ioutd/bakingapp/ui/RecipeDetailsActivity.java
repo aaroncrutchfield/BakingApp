@@ -24,22 +24,14 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
 
     public static final String RECIPE_ID = "recipeID";
     public static final String RECIPE_NAME = "recipeName";
-
-//    @BindView(R.id.rv_ingredients)
-//    RecyclerView rvIngredients;
-//
-//    @BindView(R.id.rv_steps)
-//    RecyclerView rvSteps;
-//
-//    @BindView(R.id.iv_recipe_image)
-//    ImageView ivRecipeImage;
+    public static final String STEP_ID = "stepID";
 
     @Nullable
     @BindView(R.id.steps_container)
     FrameLayout stepsContainer;
 
-
     FragmentManager manager;
+    AppViewModel appViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,94 +45,43 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
 
         Intent intent = getIntent();
 
+        appViewModel = ViewModelProviders.of(this).get(AppViewModel.class);
+
         // Don't use 0 as default value because it may actually exist
         int recipeID = intent.getIntExtra(RECIPE_ID, -1);
+        final int stepID = intent.getIntExtra(STEP_ID, -1);
+
         String recipeName = intent.getStringExtra(RECIPE_NAME);
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(recipeName);
-            actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-            RecipeDetailsFragment recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipeID, recipeName);
+        RecipeDetailsFragment recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipeID, recipeName);
 
-            manager = getSupportFragmentManager();
-            manager.beginTransaction()
-                    .replace(R.id.recipe_details_fragment, recipeDetailsFragment)
-                    .commit();
+        manager = getSupportFragmentManager();
+        manager.beginTransaction()
+                .replace(R.id.recipe_details_fragment, recipeDetailsFragment)
+                .commit();
 
-//        if (stepsContainer != null) {
-//
-//            setupStepFragment(0);
-//        }
-//        else {
-//            String url = GoogleImageSearch.buildSearchString(recipeName, 1, 1);
-//
-//            // Query the api on the background
-//            AndroidNetworking.get(url)
-//                    .build()
-//                    .getAsJSONObject(new JSONObjectRequestListener() {
-//                        @Override
-//                        public void onResponse(JSONObject response) {
-//                            String imageUrl = ImageJSONHandler.getImageUrl(response);
-//
-//                            // In case there were no image results from Google
-//                            if (imageUrl.equals("")) return;
-//
-//                            Picasso.with(RecipeDetailsActivity.this)
-//                                    .load(imageUrl)
-//                                    .fit()
-//                                    .into(ivRecipeImage);
-//                        }
-//
-//                        @Override
-//                        public void onError(ANError anError) {
-//
-//                        }
-//                    });
-//        }
+        if (stepsContainer != null) {
+            appViewModel.getStepByStepID(stepID).observe(this, new Observer<Step>() {
+                @Override
+                public void onChanged(@Nullable Step step) {
+                    Fragment fragment = StepDetailsFragment.newInstance(step);
+                    manager.beginTransaction()
+                            .replace(R.id.steps_container, fragment)
+                            .commit();
+                    appViewModel.getStepByStepID(stepID).removeObservers(RecipeDetailsActivity.this);
+                }
+            });
+        } else {
+
+
+        }
+
     }
-
-//    private void setupStepFragment(final int caseKey) {
-//        AppViewModel appViewModel = ViewModelProviders.of(this).get(AppViewModel.class);
-//        appViewModel.getStepByStepID(stepID).observe(this, new Observer<Step>() {
-//            @Override
-//            public void onChanged(@Nullable Step step) {
-//                if (step != null) {
-//                    Fragment fragment = StepDetailsFragment.newInstance(step);
-//                    switch (caseKey) {
-//                        case 0:
-//                            manager.beginTransaction()
-//                                    .replace(R.id.step_fragment_container, fragment)
-//                                    .commit();
-//                            break;
-//                        case 1:
-//                            manager.beginTransaction()
-//                                    .replace(R.id.step_fragment_container, fragment)
-//                                    .commit();
-//                            break;
-//                        case 2:
-//                            manager.beginTransaction()
-//                                    .replace(R.id.step_fragment_container, fragment)
-//                                    .commit();
-//                            break;
-//
-//                    }
-//                } else {
-//                    if (caseKey == 1) {
-//                        stepID--;
-//                        Toast.makeText(RecipeDetailsActivity.this, "This is the last step", Toast.LENGTH_SHORT).show();
-//                    }
-//                    if (caseKey == 2) {
-//                        stepID++;
-//                        Toast.makeText(RecipeDetailsActivity.this, "This is the first step", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//
-//            }
-//        });
-//    }
 
     @Override
     public void onNext() {
@@ -154,16 +95,20 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
 
     @Override
     public void onFragmentInteraction(int stepID) {
-        AppViewModel appViewModel = ViewModelProviders.of(this).get(AppViewModel.class);
-        final FragmentManager fragmentManager = getSupportFragmentManager();
-        appViewModel.getStepByStepID(stepID).observe(this, new Observer<Step>() {
-            @Override
-            public void onChanged(@Nullable Step step) {
-                Fragment fragment = StepDetailsFragment.newInstance(step);
-                fragmentManager.beginTransaction()
-                        .replace(R.id.steps_container, fragment)
-                        .commit();
-            }
-        });
+        if (stepsContainer != null) {
+            appViewModel.getStepByStepID(stepID).observe(this, new Observer<Step>() {
+                @Override
+                public void onChanged(@Nullable Step step) {
+                    Fragment fragment = StepDetailsFragment.newInstance(step);
+                    manager.beginTransaction()
+                            .replace(R.id.steps_container, fragment)
+                            .commit();
+                }
+            });
+        } else {
+            Intent intent = new Intent(this, StepDetailsActivity.class);
+            intent.putExtra(STEP_ID, stepID);
+            startActivity(intent);
+        }
     }
 }

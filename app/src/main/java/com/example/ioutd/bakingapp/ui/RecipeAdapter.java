@@ -96,6 +96,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
         static final String RECIPE_ID = "recipeID";
         static final String RECIPE_NAME = "recipeName";
+        public static final String STEP_ID = "stepID";
 
         ImageView ivRecipeImage;
         TextView tvRecipeName;
@@ -112,14 +113,20 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                     Recipe recipe = recipes.get(getAdapterPosition());
 
                     int recipeID = recipe.getId();
+                    int stepID = getIntroStepID(recipeID);
                     String recipeName = recipe.getName();
 
                     intent.putExtra(RECIPE_ID, recipeID);
                     intent.putExtra(RECIPE_NAME, recipeName);
+                    intent.putExtra(STEP_ID, stepID);
 
                     context.startActivity(intent);
                 }
             });
+        }
+
+        private int getIntroStepID(int recipeID) {
+            return recipeID * 100;
         }
     }
 }

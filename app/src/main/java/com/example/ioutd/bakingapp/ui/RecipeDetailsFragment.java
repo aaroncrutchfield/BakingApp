@@ -55,9 +55,11 @@ public class RecipeDetailsFragment extends Fragment {
     @BindView(R.id.rv_steps)
     RecyclerView rvSteps;
 
+    @Nullable
     @BindView(R.id.iv_recipe_image)
     ImageView ivRecipeImage;
 
+    @Nullable
     @BindView(R.id.recipe_toolbar)
     Toolbar tbRecipe;
 

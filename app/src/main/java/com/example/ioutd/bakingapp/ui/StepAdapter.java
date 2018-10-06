@@ -1,6 +1,7 @@
 package com.example.ioutd.bakingapp.ui;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,13 +23,14 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
     private final OnFragmentInteractionListener listener;
     private List<Step> steps;
 
-    public StepAdapter(Context context, OnFragmentInteractionListener listener){
+    StepAdapter(Context context, OnFragmentInteractionListener listener){
         this.context = context;
         this.listener = listener;
     }
 
+    @NonNull
     @Override
-    public StepViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public StepViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.list_item_step, parent, false);
 
@@ -36,7 +38,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
     }
 
     @Override
-    public void onBindViewHolder(StepViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull StepViewHolder holder, int position) {
         Step step = steps.get(position);
         if (position == 0) {
             holder.tvStepId.setText("");

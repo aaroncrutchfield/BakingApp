@@ -24,9 +24,9 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,7 +86,7 @@ public class StepDetailsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_step_details, container, false);
         unbinder = ButterKnife.bind(this, view);
@@ -153,7 +153,7 @@ public class StepDetailsFragment extends Fragment {
     private void setupVideoPlayer() {
         // TODO: 10/3/18 only change the ActionBar name of the StepDetailsFragment or Activity
                 String shortDescription = step.getShortDescription().replace(".", "");
-                ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                ActionBar actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
                 if (actionBar != null)
                     actionBar.setTitle(shortDescription);
 
@@ -177,16 +177,12 @@ public class StepDetailsFragment extends Fragment {
     private void initializeExoPlayer(String url) {
         if (exoPlayer == null) {
             // Instantiate the SimpleExoPlayer and set the player on the SimpleExoPlayerView
+            Context context = getContext();
             exoPlayer = ExoPlayerFactory.newSimpleInstance(
-                    new DefaultRenderersFactory(getContext()),
+                    new DefaultRenderersFactory(context),
                     new DefaultTrackSelector(),
                     new DefaultLoadControl());
             epStepVideo.setPlayer(exoPlayer);
-
-            // Prepare the MediaSource using a ExtractorMediaSource.Factory
-            String userAgent = Util.getUserAgent(getContext(), "BakingApp");
-            DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(getContext(), userAgent);
-            ExtractorMediaSource.Factory mediaSourceFactory = new ExtractorMediaSource.Factory(dataSourceFactory);
 
             MediaSource mediaSource = buildMediaSource(Uri.parse(url));
 

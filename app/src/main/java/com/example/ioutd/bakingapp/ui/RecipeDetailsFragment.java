@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -102,7 +103,7 @@ public class RecipeDetailsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_recipe_details, container, false);
@@ -118,16 +119,16 @@ public class RecipeDetailsFragment extends Fragment {
             }
         }
 
-        getRecipeImage();
-        setupRecyclerViews();
+        loadRecipeImage();
+        initializeIngredientsAndStepsList();
 
         return view;
     }
 
-    public void getRecipeImage() {
+    private void loadRecipeImage() {
         if (recipeName != null) {
             String url = GoogleImageSearch.buildSearchString(recipeName, 1, 1);
-            Log.d("RecipeDetailsFragment", "getRecipeImage.url: " + url);
+            Log.d("RecipeDetailsFragment", "loadRecipeImage.url: " + url);
             if (!url.equals("")) {
                 // Query the api on the background
                 AndroidNetworking.get(url)
@@ -155,14 +156,14 @@ public class RecipeDetailsFragment extends Fragment {
         }
     }
 
-    private void setupRecyclerViews() {
-        final IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(getContext());
+    private void initializeIngredientsAndStepsList() {
 
-        // Construct the ViewModel
         AppViewModel viewModel = ViewModelProviders.of(this).get(AppViewModel.class);
 
-        // Use the ViewModel to observe any changes
-        // onChanged, add the new data to the RecyclerView.AdapteringredientRepository, recipeID
+        final IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(getContext());
+        // TODO: 9/30/18 check within RecyclerView that context implements listener
+        final StepAdapter stepAdapter = new StepAdapter(getContext(), mListener);
+
         viewModel.getIngredientsByRecipeID(recipeID).observe(this, new Observer<List<Ingredient>>() {
             @Override
             public void onChanged(@Nullable List<Ingredient> ingredients) {
@@ -170,18 +171,15 @@ public class RecipeDetailsFragment extends Fragment {
             }
         });
 
-        rvIngredients.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvIngredients.setAdapter(ingredientsAdapter);
-
-        // TODO: 9/30/18 check within RecyclerView that context implements listener
-        final StepAdapter stepAdapter = new StepAdapter(getContext(), mListener);
-
         viewModel.getStepsByRecipeID(recipeID).observe(this, new Observer<List<Step>>() {
             @Override
             public void onChanged(@Nullable List<Step> steps) {
                 stepAdapter.addSteps(steps);
             }
         });
+
+        rvIngredients.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvIngredients.setAdapter(ingredientsAdapter);
 
         rvSteps.setLayoutManager(new LinearLayoutManager(getContext()));
         rvSteps.setAdapter(stepAdapter);

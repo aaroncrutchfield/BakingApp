@@ -1,6 +1,7 @@
 package com.example.ioutd.bakingapp.ui;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +22,13 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     private Context context;
     private List<Ingredient> ingredients;
 
-    public IngredientsAdapter(Context context) {
+    IngredientsAdapter(Context context) {
         this.context = context;
     }
 
+    @NonNull
     @Override
-    public IngredientsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public IngredientsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.list_item_ingredient, parent, false);
 
@@ -34,7 +36,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     }
 
     @Override
-    public void onBindViewHolder(IngredientsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull IngredientsViewHolder holder, int position) {
         Ingredient ingredient = ingredients.get(position);
 
         String measurementString = ingredient.getQuantity()+ " " +

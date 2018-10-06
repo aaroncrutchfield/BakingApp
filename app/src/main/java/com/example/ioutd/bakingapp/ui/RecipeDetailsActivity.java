@@ -41,44 +41,26 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
         Toolbar toolbar = findViewById(R.id.recipe_toolbar);
         setSupportActionBar(toolbar);
 
-        ActionBar actionBar = getSupportActionBar();
-
         Intent intent = getIntent();
-
-        appViewModel = ViewModelProviders.of(this).get(AppViewModel.class);
 
         // Don't use 0 as default value because it may actually exist
         int recipeID = intent.getIntExtra(RECIPE_ID, -1);
         final int stepID = intent.getIntExtra(STEP_ID, -1);
-
         String recipeName = intent.getStringExtra(RECIPE_NAME);
 
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(recipeName);
         }
 
-        RecipeDetailsFragment recipeDetailsFragment = RecipeDetailsFragment.newInstance(recipeID, recipeName);
-
+        appViewModel = ViewModelProviders.of(this).get(AppViewModel.class);
         manager = getSupportFragmentManager();
-        manager.beginTransaction()
-                .replace(R.id.recipe_details_fragment, recipeDetailsFragment)
-                .commit();
+
+        loadRecipeDetailsFragment(recipeID, recipeName);
 
         if (stepsContainer != null) {
-            appViewModel.getStepByStepID(stepID).observe(this, new Observer<Step>() {
-                @Override
-                public void onChanged(@Nullable Step step) {
-                    Fragment fragment = StepDetailsFragment.newInstance(step);
-                    manager.beginTransaction()
-                            .replace(R.id.steps_container, fragment)
-                            .commit();
-                    appViewModel.getStepByStepID(stepID).removeObservers(RecipeDetailsActivity.this);
-                }
-            });
-        } else {
-
-
+            loadStepDetailsFragment(stepID);
         }
 
     }
@@ -96,19 +78,35 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
     @Override
     public void onFragmentInteraction(int stepID) {
         if (stepsContainer != null) {
-            appViewModel.getStepByStepID(stepID).observe(this, new Observer<Step>() {
-                @Override
-                public void onChanged(@Nullable Step step) {
-                    Fragment fragment = StepDetailsFragment.newInstance(step);
-                    manager.beginTransaction()
-                            .replace(R.id.steps_container, fragment)
-                            .commit();
-                }
-            });
+            loadStepDetailsFragment(stepID);
         } else {
-            Intent intent = new Intent(this, StepDetailsActivity.class);
-            intent.putExtra(STEP_ID, stepID);
-            startActivity(intent);
+            startStepDetailsActivity(stepID);
         }
+    }
+
+    private void loadRecipeDetailsFragment(int recipeID, String recipeName) {
+        Fragment fragment = RecipeDetailsFragment.newInstance(recipeID, recipeName);
+
+        manager.beginTransaction()
+                .replace(R.id.recipe_details_container, fragment)
+                .commit();
+    }
+
+    private void loadStepDetailsFragment(int stepID) {
+        appViewModel.getStepByStepID(stepID).observe(this, new Observer<Step>() {
+            @Override
+            public void onChanged(@Nullable Step step) {
+                Fragment fragment = StepDetailsFragment.newInstance(step);
+                manager.beginTransaction()
+                        .replace(R.id.steps_container, fragment)
+                        .commit();
+            }
+        });
+    }
+
+    private void startStepDetailsActivity(int stepID) {
+        Intent intent = new Intent(this, StepDetailsActivity.class);
+        intent.putExtra(STEP_ID, stepID);
+        startActivity(intent);
     }
 }

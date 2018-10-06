@@ -2,6 +2,7 @@ package com.example.ioutd.bakingapp.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,8 +39,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         this.context = context;
     }
 
+    @NonNull
     @Override
-    public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View itemView = inflater.inflate(R.layout.list_item_recipe, parent, false);
 
@@ -47,13 +49,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     @Override
-    public void onBindViewHolder(final RecipeViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecipeViewHolder holder, int position) {
         Recipe recipe = recipes.get(position);
 
         String recipeName = recipe.getName();
         // Set the recipe name
         holder.tvRecipeName.setText(recipeName);
 
+        loadRecipeImage(holder, recipeName);
+    }
+
+    private void loadRecipeImage(final RecipeViewHolder holder, String recipeName) {
         String url = GoogleImageSearch.buildSearchString(recipeName, 1, 1);
 
         // Query the api on the background
@@ -96,7 +102,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
         static final String RECIPE_ID = "recipeID";
         static final String RECIPE_NAME = "recipeName";
-        public static final String STEP_ID = "stepID";
+        static final String STEP_ID = "stepID";
 
         ImageView ivRecipeImage;
         TextView tvRecipeName;
@@ -109,20 +115,24 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, RecipeDetailsActivity.class);
-                    Recipe recipe = recipes.get(getAdapterPosition());
-
-                    int recipeID = recipe.getId();
-                    int stepID = getIntroStepID(recipeID);
-                    String recipeName = recipe.getName();
-
-                    intent.putExtra(RECIPE_ID, recipeID);
-                    intent.putExtra(RECIPE_NAME, recipeName);
-                    intent.putExtra(STEP_ID, stepID);
-
-                    context.startActivity(intent);
+                    startRecipeDetailsActivity();
                 }
             });
+        }
+
+        private void startRecipeDetailsActivity() {
+            Intent intent = new Intent(context, RecipeDetailsActivity.class);
+            Recipe recipe = recipes.get(getAdapterPosition());
+
+            int recipeID = recipe.getId();
+            int stepID = getIntroStepID(recipeID);
+            String recipeName = recipe.getName();
+
+            intent.putExtra(RECIPE_ID, recipeID);
+            intent.putExtra(RECIPE_NAME, recipeName);
+            intent.putExtra(STEP_ID, stepID);
+
+            context.startActivity(intent);
         }
 
         private int getIntroStepID(int recipeID) {

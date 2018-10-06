@@ -9,9 +9,6 @@ import com.example.ioutd.bakingapp.R;
 
 public class MainActivity extends AppCompatActivity{
 
-    private String TAG = MainActivity.class.getSimpleName();
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +22,4 @@ public class MainActivity extends AppCompatActivity{
         ab.setDisplayHomeAsUpEnabled(true);
 
     }
-
-
 }

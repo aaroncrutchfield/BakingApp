@@ -51,58 +51,10 @@ public class RecipeListFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_recipe_list, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
-        final RecipeAdapter recipeAdapter = new RecipeAdapter(getContext());
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
-
-        rvRecipes.setLayoutManager(layoutManager);
-        rvRecipes.setAdapter(recipeAdapter);
-        
-        setupRecipesRecyclerView();
-
-        // Construct the ViewModel
-        AppViewModel viewModel = ViewModelProviders.of(this).get(AppViewModel.class);
-
-        // Use the ViewModel to observe any changes 
-        // onChanged, add the new data to the RecyclerView.Adapter
-        viewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
-            @Override
-            public void onChanged(@Nullable List<Recipe> recipes) {
-                recipeAdapter.addRecipes(recipes);
-            }
-        });
+        loadRecipesFromJSON();
+        initializeRecipesList();
 
         return rootView;
-    }
-
-    private void setupRecipesRecyclerView() {
-        final JSONDataUtil jsonDataUtil = new JSONDataUtil();
-        final Context context = getContext();
-
-        AndroidNetworking.initialize(context);
-        String url = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
-
-        AndroidNetworking.get(url)
-                .build()
-                .getAsJSONArray(new JSONArrayRequestListener() {
-                    @Override
-                    public void onResponse(final JSONArray response) {
-                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    jsonDataUtil.insertJSONtoDatabase(context, response);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-
-                    }
-                });
     }
 
     @Override
@@ -110,5 +62,60 @@ public class RecipeListFragment extends Fragment {
         super.onDestroyView();
         // Unbind the views
         unbinder.unbind();
+    }
+
+    private void loadRecipesFromJSON() {
+        final JSONDataUtil jsonDataUtil = new JSONDataUtil();
+        final Context context = getContext();
+
+        if (context != null) {
+            AndroidNetworking.initialize(context);
+
+            String url = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
+
+            AndroidNetworking.get(url)
+                    .build()
+                    .getAsJSONArray(new JSONArrayRequestListener() {
+                        @Override
+                        public void onResponse(final JSONArray response) {
+                            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        jsonDataUtil.insertJSONtoDatabase(context, response);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+
+                        }
+                    });
+        }
+    }
+
+    private void initializeRecipesList() {
+        final RecipeAdapter recipeAdapter = new RecipeAdapter(getContext());
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+
+        rvRecipes.setLayoutManager(layoutManager);
+        rvRecipes.setAdapter(recipeAdapter);
+
+
+        // Construct the ViewModel
+        AppViewModel viewModel = ViewModelProviders.of(this).get(AppViewModel.class);
+
+        // Use the ViewModel to observe any changes
+        // onChanged, add the new data to the RecyclerView.Adapter
+        viewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
+            @Override
+            public void onChanged(@Nullable List<Recipe> recipes) {
+                recipeAdapter.addRecipes(recipes);
+            }
+        });
     }
 }

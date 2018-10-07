@@ -55,10 +55,6 @@ public class RecipeDetailsFragment extends Fragment {
     @BindView(R.id.rv_steps)
     RecyclerView rvSteps;
 
-    @Nullable
-    @BindView(R.id.recipe_toolbar)
-    Toolbar toolbar;
-
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String RECIPE_ID = "param1";
@@ -106,16 +102,6 @@ public class RecipeDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_recipe_details, container, false);
         unbinder = ButterKnife.bind(this, view);
-
-        AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
-        if (appCompatActivity != null) {
-            appCompatActivity.setSupportActionBar(toolbar);
-            ActionBar actionBar = appCompatActivity.getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setTitle(recipeName);
-            }
-        }
 
         initializeIngredientsAndStepsList();
 

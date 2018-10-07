@@ -61,7 +61,7 @@ public class RecipeDetailsFragment extends Fragment {
 
     @Nullable
     @BindView(R.id.recipe_toolbar)
-    Toolbar tbRecipe;
+    Toolbar toolbar;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -113,7 +113,7 @@ public class RecipeDetailsFragment extends Fragment {
 
         AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
         if (appCompatActivity != null) {
-            appCompatActivity.setSupportActionBar(tbRecipe);
+            appCompatActivity.setSupportActionBar(toolbar);
             ActionBar actionBar = appCompatActivity.getSupportActionBar();
             if (actionBar != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);

@@ -56,10 +56,6 @@ public class RecipeDetailsFragment extends Fragment {
     RecyclerView rvSteps;
 
     @Nullable
-    @BindView(R.id.iv_recipe_image)
-    ImageView ivRecipeImage;
-
-    @Nullable
     @BindView(R.id.recipe_toolbar)
     Toolbar toolbar;
 
@@ -121,41 +117,9 @@ public class RecipeDetailsFragment extends Fragment {
             }
         }
 
-        loadRecipeImage();
         initializeIngredientsAndStepsList();
 
         return view;
-    }
-
-    private void loadRecipeImage() {
-        if (recipeName != null) {
-            String url = GoogleImageSearch.buildSearchString(recipeName, 1, 1);
-            Log.d("RecipeDetailsFragment", "loadRecipeImage.url: " + url);
-            if (!url.equals("")) {
-                // Query the api on the background
-                AndroidNetworking.get(url)
-                        .build()
-                        .getAsJSONObject(new JSONObjectRequestListener() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                String imageUrl = ImageJSONHandler.getImageUrl(response);
-
-                                // In case there were no image results from Google
-                                if (imageUrl.equals("") || ivRecipeImage == null) return;
-
-                                Picasso.with(getContext())
-                                        .load(imageUrl)
-                                        .fit()
-                                        .into(ivRecipeImage);
-                            }
-
-                            @Override
-                            public void onError(ANError anError) {
-
-                            }
-                        });
-            }
-        }
     }
 
     private void initializeIngredientsAndStepsList() {

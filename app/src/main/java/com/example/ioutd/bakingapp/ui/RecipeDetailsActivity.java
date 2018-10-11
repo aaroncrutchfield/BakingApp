@@ -3,6 +3,7 @@ package com.example.ioutd.bakingapp.ui;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,21 +11,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.data.AppViewModel;
 import com.example.ioutd.bakingapp.model.Step;
-import com.example.ioutd.bakingapp.utilities.GoogleImageSearch;
-import com.example.ioutd.bakingapp.utilities.ImageJSONHandler;
-import com.squareup.picasso.Picasso;
-
-import org.json.JSONObject;
+import com.example.ioutd.bakingapp.utilities.AssetImageLoader;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -103,31 +96,9 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
 
     private void loadRecipeImage() {
         if (recipeName != null) {
-            String url = GoogleImageSearch.buildSearchString(recipeName, 1, 1);
-            Log.d("RecipeDetailsFragment", "loadRecipeImage.url: " + url);
-            if (!url.equals("")) {
-                // Query the api on the background
-                AndroidNetworking.get(url)
-                        .build()
-                        .getAsJSONObject(new JSONObjectRequestListener() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                String imageUrl = ImageJSONHandler.getImageUrl(response);
-
-                                // In case there were no image results from Google
-                                if (imageUrl.equals("") || ivRecipeImage == null) return;
-
-                                Picasso.with(RecipeDetailsActivity.this)
-                                        .load(imageUrl)
-                                        .fit()
-                                        .into(ivRecipeImage);
-                            }
-
-                            @Override
-                            public void onError(ANError anError) {
-
-                            }
-                        });
+            Bitmap bitmap = new AssetImageLoader().loadImage(this, recipeName);
+            if (ivRecipeImage != null) {
+                ivRecipeImage.setImageBitmap(bitmap);
             }
         }
     }

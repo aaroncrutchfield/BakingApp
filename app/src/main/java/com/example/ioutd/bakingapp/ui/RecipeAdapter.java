@@ -2,25 +2,18 @@ package com.example.ioutd.bakingapp.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.model.Recipe;
-import com.example.ioutd.bakingapp.utilities.GoogleImageSearch;
-import com.example.ioutd.bakingapp.utilities.ImageJSONHandler;
-import com.squareup.picasso.Picasso;
-
-import org.json.JSONObject;
+import com.example.ioutd.bakingapp.utilities.AssetImageLoader;
 
 import java.util.List;
 
@@ -60,31 +53,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     private void loadRecipeImage(final RecipeViewHolder holder, String recipeName) {
-        String url = GoogleImageSearch.buildSearchString(recipeName, 1, 1);
-
-        // Query the api on the background
-        AndroidNetworking.get(url)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        String imageUrl = ImageJSONHandler.getImageUrl(response);
-
-                        // In case there were no image results from Google
-                        if (imageUrl.equals("")) return;
-
-                        Picasso.with(context)
-                                .load(imageUrl)
-                                .fit()
-                                .into(holder.ivRecipeImage);
-                        Log.d(TAG, "onResponse: ran");
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-
-                    }
-                });
+        Bitmap bitmap = new AssetImageLoader().loadImage(context, recipeName);
+        holder.ivRecipeImage.setImageBitmap(bitmap);
     }
 
     @Override

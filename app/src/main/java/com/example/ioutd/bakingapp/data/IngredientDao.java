@@ -22,5 +22,8 @@ public interface IngredientDao {
     void insertAllIngredients(List<Ingredient> ingredients);
 
     @Query("SELECT * FROM ingredient WHERE recipeID=:recipeID")
-    LiveData<List<Ingredient>> getIngredientsByRecipeID(long recipeID);
+    LiveData<List<Ingredient>> getLiveIngredientsByRecipeID(long recipeID);
+
+    @Query("SELECT * FROM ingredient WHERE recipeID=:recipeID")
+    List<Ingredient> getIngredientsByRecipeID(long recipeID);
 }

@@ -103,7 +103,7 @@ public class RecipeDetailsFragment extends Fragment {
         // TODO: 9/30/18 check within RecyclerView that context implements listener
         final StepAdapter stepAdapter = new StepAdapter(getContext(), mListener);
 
-        viewModel.getIngredientsByRecipeID(recipeID).observe(this, new Observer<List<Ingredient>>() {
+        viewModel.getLiveIngredientsByRecipeID(recipeID).observe(this, new Observer<List<Ingredient>>() {
             @Override
             public void onChanged(@Nullable List<Ingredient> ingredients) {
                 ingredientsAdapter.addIngredients(ingredients);

@@ -40,7 +40,11 @@ public class AppViewModel extends AndroidViewModel {
         return recipeRepository.getRecipeWithId(id);
     }
 
-    public LiveData<List<Ingredient>> getIngredientsByRecipeID(long recipeID) {
+    public LiveData<List<Ingredient>> getLiveIngredientsByRecipeID(long recipeID) {
+        return ingrdientRepository.getLiveIngredientsByRecipeID(recipeID);
+    }
+
+    public List<Ingredient> getIngredientsByRecipeID(long recipeID) {
         return ingrdientRepository.getIngredientsByRecipeID(recipeID);
     }
 

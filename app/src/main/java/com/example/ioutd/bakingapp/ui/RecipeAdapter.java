@@ -2,27 +2,20 @@ package com.example.ioutd.bakingapp.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.example.ioutd.bakingapp.R;
-import com.example.ioutd.bakingapp.RecipeDetailsActivity;
 import com.example.ioutd.bakingapp.model.Recipe;
-import com.example.ioutd.bakingapp.utilities.GoogleImageSearch;
-import com.example.ioutd.bakingapp.utilities.ImageJSONHandler;
-import com.squareup.picasso.Picasso;
+import com.example.ioutd.bakingapp.utilities.AssetImageLoader;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ioutd on 1/11/2018.
@@ -33,15 +26,15 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     private static final String TAG = RecipeAdapter.class.getSimpleName();
 
     private Context context;
-    private ArrayList<Recipe> recipesArray;
+    private List<Recipe> recipes;
 
-    public RecipeAdapter(Context context, ArrayList<Recipe> recipesArray) {
+    RecipeAdapter(Context context) {
         this.context = context;
-        this.recipesArray = recipesArray;
     }
 
+    @NonNull
     @Override
-    public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View itemView = inflater.inflate(R.layout.list_item_recipe, parent, false);
 
@@ -49,56 +42,42 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     @Override
-    public void onBindViewHolder(final RecipeViewHolder holder, int position) {
-        Recipe recipe = recipesArray.get(position);
+    public void onBindViewHolder(@NonNull final RecipeViewHolder holder, int position) {
+        Recipe recipe = recipes.get(position);
 
         String recipeName = recipe.getName();
         // Set the recipe name
         holder.tvRecipeName.setText(recipeName);
 
-        String url = GoogleImageSearch.buildSearchString(recipeName, 1, 1);
+        loadRecipeImage(holder, recipeName);
+    }
 
-        // Query the api on the background
-        AndroidNetworking.get(url)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        String imageUrl = ImageJSONHandler.getImageUrl(response);
-
-                        // In case there were no image results from Google
-                        if (imageUrl.equals("")) return;
-
-                        Picasso.with(context)
-                                .load(imageUrl)
-                                .fit()
-                                .into(holder.ivRecipeImage);
-                        Log.d(TAG, "onResponse: ran");
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-
-                    }
-                });
+    private void loadRecipeImage(final RecipeViewHolder holder, String recipeName) {
+        Bitmap bitmap = new AssetImageLoader().loadImage(context, recipeName);
+        holder.ivRecipeImage.setImageBitmap(bitmap);
     }
 
     @Override
     public int getItemCount() {
-        if (recipesArray == null)
-            return 0;
-        else
-            return recipesArray.size();
+        if (recipes == null) return 0;
+        return recipes.size();
+    }
+
+    void addRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
+        notifyDataSetChanged();
     }
 
     class RecipeViewHolder extends RecyclerView.ViewHolder {
 
-        public static final String RECIPE = "recipe";
+        static final String RECIPE_ID = "recipeID";
+        static final String RECIPE_NAME = "recipeName";
+        static final String STEP_ID = "stepID";
 
         ImageView ivRecipeImage;
         TextView tvRecipeName;
 
-        RecipeViewHolder(View itemView) {
+        RecipeViewHolder(final View itemView) {
             super(itemView);
             ivRecipeImage = itemView.findViewById(R.id.iv_recipe_image);
             tvRecipeName = itemView.findViewById(R.id.tv_recipe_name);
@@ -106,12 +85,28 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, RecipeDetailsActivity.class);
-
-                    intent.putExtra(RECIPE, recipesArray.get(getAdapterPosition()));
-                    context.startActivity(intent);
+                    startRecipeDetailsActivity();
                 }
             });
+        }
+
+        private void startRecipeDetailsActivity() {
+            Intent intent = new Intent(context, RecipeDetailsActivity.class);
+            Recipe recipe = recipes.get(getAdapterPosition());
+
+            int recipeID = recipe.getId();
+            int stepID = getIntroStepID(recipeID);
+            String recipeName = recipe.getName();
+
+            intent.putExtra(RECIPE_ID, recipeID);
+            intent.putExtra(RECIPE_NAME, recipeName);
+            intent.putExtra(STEP_ID, stepID);
+
+            context.startActivity(intent);
+        }
+
+        private int getIntroStepID(int recipeID) {
+            return recipeID * 100;
         }
     }
 }

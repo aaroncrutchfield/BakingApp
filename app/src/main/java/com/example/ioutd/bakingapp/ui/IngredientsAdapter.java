@@ -1,6 +1,7 @@
 package com.example.ioutd.bakingapp.ui;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,7 @@ import android.widget.TextView;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.model.Ingredient;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ioutd on 1/18/2018.
@@ -19,15 +20,15 @@ import java.util.ArrayList;
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientsViewHolder> {
 
     private Context context;
-    private ArrayList<Ingredient> ingredientArrayList;
+    private List<Ingredient> ingredients;
 
-    public IngredientsAdapter(Context context, ArrayList<Ingredient> ingredientArrayList) {
+    IngredientsAdapter(Context context) {
         this.context = context;
-        this.ingredientArrayList = ingredientArrayList;
     }
 
+    @NonNull
     @Override
-    public IngredientsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public IngredientsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.list_item_ingredient, parent, false);
 
@@ -35,11 +36,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     }
 
     @Override
-    public void onBindViewHolder(IngredientsViewHolder holder, int position) {
-        Ingredient ingredient = ingredientArrayList.get(position);
+    public void onBindViewHolder(@NonNull IngredientsViewHolder holder, int position) {
+        Ingredient ingredient = ingredients.get(position);
 
         String measurementString = ingredient.getQuantity()+ " " +
-                ingredient.getMeasurement().toString();
+                ingredient.getMeasure();
 
         holder.tvMeasurement.setText(measurementString);
         holder.tvIngredient.setText(ingredient.getIngredient());
@@ -47,14 +48,20 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     @Override
     public int getItemCount() {
-        return ingredientArrayList.size();
+        if (ingredients == null) return 0;
+        return ingredients.size();
+    }
+
+    public void addIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+        notifyDataSetChanged();
     }
 
     class IngredientsViewHolder extends RecyclerView.ViewHolder{
         TextView tvMeasurement;
         TextView tvIngredient;
 
-        public IngredientsViewHolder(View itemView) {
+        IngredientsViewHolder(View itemView) {
             super(itemView);
 
             tvMeasurement = itemView.findViewById(R.id.tv_measurement);

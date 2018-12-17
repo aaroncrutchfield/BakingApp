@@ -29,23 +29,26 @@ public class IngredientsWidgetService extends RemoteViewsService{
         private final Context mContext;
         AppViewModel viewModel;
         private List<Ingredient> ingredientsList = new ArrayList<>();
+        private int recipeID;
 
         public IngredientsRemoteViewsFactory(Context applicationContext, Intent intent) {
-            Log.d(TAG, "IngredientsRemoteViewsFactory: ");
             mContext = applicationContext.getApplicationContext();
             viewModel = new AppViewModel(getApplication());
+            // TODO: 12/14/18 Does getRecipe with ID 0 return the first recipe?
+            recipeID = intent.getIntExtra("recipeID", 1);
+            Log.d(TAG, "IngredientsRemoteViewsFactory.recipeID: " + recipeID);
         }
 
         @Override
         public void onCreate() {
             Log.d(TAG, "onCreate: ");
-            getIngredients(4);
+            getIngredients();
         }
 
         @Override
         public void onDataSetChanged() {
             Log.d(TAG, "onDataSetChanged: ");
-            getIngredients(4);
+            getIngredients();
         }
 
         @Override
@@ -96,7 +99,7 @@ public class IngredientsWidgetService extends RemoteViewsService{
             return true;
         }
 
-        public void getIngredients(final int recipeID) {
+        public void getIngredients() {
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                 @Override
                 public void run() {

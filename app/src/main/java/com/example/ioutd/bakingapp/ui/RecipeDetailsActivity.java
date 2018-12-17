@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.data.AppViewModel;
 import com.example.ioutd.bakingapp.model.Step;
-import com.example.ioutd.bakingapp.utilities.AssetImageLoader;
+import com.example.ioutd.bakingapp.utilities.Utils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -96,7 +96,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
 
     private void loadRecipeImage() {
         if (recipeName != null) {
-            Bitmap bitmap = new AssetImageLoader().loadImage(this, recipeName);
+            Bitmap bitmap = Utils.loadAssetImage(this, recipeName);
             if (ivRecipeImage != null) {
                 ivRecipeImage.setImageBitmap(bitmap);
             }

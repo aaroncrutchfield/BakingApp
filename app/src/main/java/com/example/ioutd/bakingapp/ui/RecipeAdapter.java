@@ -1,5 +1,7 @@
 package com.example.ioutd.bakingapp.ui;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,9 +13,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.ioutd.bakingapp.IngredientsWidgetProvider;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.model.Recipe;
-import com.example.ioutd.bakingapp.utilities.AssetImageLoader;
+import com.example.ioutd.bakingapp.utilities.SharedPrefs;
+import com.example.ioutd.bakingapp.utilities.Utils;
 
 import java.util.List;
 
@@ -53,7 +57,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     private void loadRecipeImage(final RecipeViewHolder holder, String recipeName) {
-        Bitmap bitmap = new AssetImageLoader().loadImage(context, recipeName);
+        Bitmap bitmap = Utils.loadAssetImage(context, recipeName);
         holder.ivRecipeImage.setImageBitmap(bitmap);
     }
 
@@ -85,14 +89,25 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     startRecipeDetailsActivity();
+                    updateWidgetRecipe();
                 }
             });
+        }
+
+        private void updateWidgetRecipe() {
+            AppWidgetManager manager = context.getSystemService(AppWidgetManager.class);
+            int [] ids = manager.getAppWidgetIds(new ComponentName(context, IngredientsWidgetProvider.class));
+
+            IngredientsWidgetProvider.updateAppWidgets(context, manager, ids);
         }
 
         private void startRecipeDetailsActivity() {
             Intent intent = new Intent(context, RecipeDetailsActivity.class);
             Recipe recipe = recipes.get(getAdapterPosition());
+
+            SharedPrefs.saveRecipe(context, recipe);
 
             int recipeID = recipe.getId();
             int stepID = getIntroStepID(recipeID);

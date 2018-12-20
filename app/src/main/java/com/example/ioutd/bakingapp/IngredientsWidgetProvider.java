@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.ioutd.bakingapp.utilities.SharedPrefs;
@@ -16,27 +15,19 @@ import com.example.ioutd.bakingapp.utilities.Utils;
  */
 public class IngredientsWidgetProvider extends AppWidgetProvider {
 
-    public static final String GET_INGREDIENTS_LIST = "getIngredientsList";
-    public static final String INGREDIENTS_LIST = "ingredientsList";
-    public static final String INGREDIENTS_WIDGET_UPDATE = "IngredientsWidgetUpdate";
-    static String TAG = "WidgetProvider";
+    public static final String SET_IMAGE_BITMAP = "setImageBitmap";
 
-    // TODO: 10/28/18 delete updateAppWidget method
     static RemoteViews updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                        int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget);
-        // TODO: 12/14/18 get recipe name and id from shared preferences
 
         String recipeName = SharedPrefs.loadRecipeName(context);
-        int recipeID = SharedPrefs.loadRecipeID(context);
         Bitmap bitmap = loadImageView(recipeName, context);
-        views.setBitmap(R.id.widget_image, "setImageBitmap", bitmap);
-        Log.d(TAG, "updateAppWidget.recipeID: " + recipeID);
+        views.setBitmap(R.id.widget_image, SET_IMAGE_BITMAP, bitmap);
 
         // set the adapter on the listView
         Intent serviceIntent = new Intent(context, IngredientsWidgetService.class);
         serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        serviceIntent.putExtra("recipeID", recipeID);
 
         views.setRemoteAdapter(R.id.widget_list_ingredients, serviceIntent);
 
@@ -50,7 +41,6 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
-        Log.d(TAG, "onUpdate: ");
         for (int appWidgetId : appWidgetIds) {
             // Use the first recipe by default onUpdate
             updateAppWidget(context, appWidgetManager, appWidgetId);
@@ -58,7 +48,6 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
     }
 
     public static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Log.d(TAG, "staticUpdateAppWidgetsL ");
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }

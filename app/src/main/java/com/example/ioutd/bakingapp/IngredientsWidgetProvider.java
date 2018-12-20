@@ -23,6 +23,7 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
 
         String recipeName = SharedPrefs.loadRecipeName(context);
         Bitmap bitmap = loadImageView(recipeName, context);
+        views.setTextViewText(R.id.widget_tv_title, recipeName);
         views.setBitmap(R.id.widget_image, SET_IMAGE_BITMAP, bitmap);
 
         // set the adapter on the listView

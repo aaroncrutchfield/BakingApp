@@ -11,19 +11,18 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONArrayRequestListener;
-import com.example.ioutd.bakingapp.utilities.AppExecutors;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.data.AppViewModel;
 import com.example.ioutd.bakingapp.model.Recipe;
+import com.example.ioutd.bakingapp.utilities.AppExecutors;
 import com.example.ioutd.bakingapp.utilities.JSONDataUtil;
+import com.example.ioutd.bakingapp.utilities.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,7 +44,6 @@ public class RecipeListFragment extends Fragment {
 
     private Unbinder unbinder;
     GridLayoutManager layoutManager;
-    private int spanCount;
 
     public RecipeListFragment(){
     }
@@ -57,7 +55,6 @@ public class RecipeListFragment extends Fragment {
         unbinder = ButterKnife.bind(this, rootView);
 
         loadRecipesFromJSON();
-        getScreenOrientation();
 
         initializeRecipesList();
 
@@ -117,27 +114,10 @@ public class RecipeListFragment extends Fragment {
         }
     }
 
-    // https://www.viralandroid.com/2016/01/how-to-check-android-device-screen-orientation.html
-    private void getScreenOrientation() {
-        final int screenOrientation = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
-        switch (screenOrientation) {
-            case Surface.ROTATION_0:
-                spanCount = 2;
-                break;
-            case Surface.ROTATION_90:
-                spanCount = 4;
-                break;
-            case Surface.ROTATION_180:
-                spanCount = 2;
-                break;
-            default:
-                spanCount = 2;
-        }
-    }
-
     private void initializeRecipesList() {
         final RecipeAdapter recipeAdapter = new RecipeAdapter(getContext());
 
+        int spanCount = Utils.getScreenOrientation(getContext());
         layoutManager = new GridLayoutManager(getContext(), spanCount);
 
         rvRecipes.setLayoutManager(layoutManager);

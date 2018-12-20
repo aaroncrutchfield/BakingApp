@@ -1,7 +1,6 @@
 package com.example.ioutd.bakingapp.utilities;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.ioutd.bakingapp.data.AppDatabase;
 import com.example.ioutd.bakingapp.model.Ingredient;
@@ -65,7 +64,6 @@ public class JSONDataUtil {
 
                 // Set the foreignKey recipeID
                 ingredient.setRecipeID(recipe.getId());
-                Log.d(TAG, "insertJSONtoDatabase: Ingredient=\n" + ingredient.toString());
 
                 ingredientArrayList.add(ingredient);
             }
@@ -89,7 +87,6 @@ public class JSONDataUtil {
 
                 int stepID = formatStepID(step.getRecipeID(), step.getId());
                 step.setStepID(stepID);
-                Log.d(TAG, "insertJSONtoDatabase: Step=\n" + step.toString());
                 stepArrayList.add(step);
             }
             // TODO: 9/14/18 Use the repo to insertAllSteps insted of the DAO directly

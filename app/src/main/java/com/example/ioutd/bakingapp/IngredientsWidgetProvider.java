@@ -5,29 +5,26 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.example.ioutd.bakingapp.utilities.AssetImageLoader;
+import com.example.ioutd.bakingapp.utilities.SharedPrefs;
+import com.example.ioutd.bakingapp.utilities.Utils;
 
 /**
  * Implementation of App Widget functionality.
  */
 public class IngredientsWidgetProvider extends AppWidgetProvider {
 
-    public static final String GET_INGREDIENTS_LIST = "getIngredientsList";
-    public static final String INGREDIENTS_LIST = "ingredientsList";
-    public static final String INGREDIENTS_WIDGET_UPDATE = "IngredientsWidgetUpdate";
-    static String TAG = "WidgetProvider";
+    public static final String SET_IMAGE_BITMAP = "setImageBitmap";
 
-    // TODO: 10/28/18 delete updateAppWidget method
     static RemoteViews updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
-        Log.d(TAG, "updateAppWidget: ");
+                                       int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget);
-        String recipeName = "Brownies";
+
+        String recipeName = SharedPrefs.loadRecipeName(context);
         Bitmap bitmap = loadImageView(recipeName, context);
-        views.setBitmap(R.id.widget_image, "setImageBitmap", bitmap);
+        views.setTextViewText(R.id.widget_tv_title, recipeName);
+        views.setBitmap(R.id.widget_image, SET_IMAGE_BITMAP, bitmap);
 
         // set the adapter on the listView
         Intent serviceIntent = new Intent(context, IngredientsWidgetService.class);
@@ -45,14 +42,13 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
-        Log.d(TAG, "onUpdate: ");
         for (int appWidgetId : appWidgetIds) {
+            // Use the first recipe by default onUpdate
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
     }
 
     public static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Log.d(TAG, "staticUpdateAppWidgets: ");
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
@@ -70,7 +66,7 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
 
     private static Bitmap loadImageView(String recipeName, Context context) {
         if (recipeName != null) {
-            return new AssetImageLoader().loadImage(context, recipeName);
+            return Utils.loadAssetImage(context, recipeName);
         }
         return null;
     }

@@ -82,10 +82,6 @@ public class StepDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             step = (Step) getArguments().get(STEP_OBJECT);
-            String shortDescription = step.getShortDescription().replace(".", "");
-            ActionBar actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
-            if (actionBar != null)
-                actionBar.setTitle(shortDescription);
         }
     }
 
@@ -156,7 +152,10 @@ public class StepDetailsFragment extends Fragment {
 
     private void setupVideoPlayer() {
         // TODO: 10/3/18 only change the ActionBar name of the StepDetailsFragment or Activity
-
+                String shortDescription = step.getShortDescription().replace(".", "");
+                ActionBar actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
+                if (actionBar != null)
+                    actionBar.setTitle(shortDescription);
 
                 // Initialize the player and pass in the video url
                 String stepVideoURL = step.getVideoURL();

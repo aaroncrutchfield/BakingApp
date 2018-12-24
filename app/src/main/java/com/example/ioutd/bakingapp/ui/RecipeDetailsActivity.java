@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.data.AppViewModel;
 import com.example.ioutd.bakingapp.model.Step;
-import com.example.ioutd.bakingapp.utilities.SharedPrefs;
 import com.example.ioutd.bakingapp.utilities.Utils;
 
 import butterknife.BindView;
@@ -27,6 +26,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
         RecipeDetailsFragment.OnFragmentInteractionListener{
 
     public static final String RECIPE_ID = "recipeID";
+    public static final String RECIPE_NAME = "recipeName";
     public static final String STEP_ID = "stepID";
 
     @Nullable
@@ -54,7 +54,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
         // Don't use 0 as default value because it may actually exist
         int recipeID = intent.getIntExtra(RECIPE_ID, -1);
         final int stepID = intent.getIntExtra(STEP_ID, -1);
-        recipeName = SharedPrefs.loadRecipeName(this);
+        recipeName = intent.getStringExtra(RECIPE_NAME);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

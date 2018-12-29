@@ -51,7 +51,6 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
 
         Intent intent = getIntent();
 
-        // Don't use 0 as default value because it may actually exist
         int recipeID = intent.getIntExtra(RECIPE_ID, -1);
         final int stepID = intent.getIntExtra(STEP_ID, -1);
         recipeName = intent.getStringExtra(RECIPE_NAME);

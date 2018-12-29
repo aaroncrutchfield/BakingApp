@@ -15,7 +15,7 @@ import com.example.ioutd.bakingapp.repositories.StepRepository;
 import java.util.List;
 
 /**
- * Created by ioutd on 2/2/2018.
+ * ViewModel containing methods for accessing data from database
  */
 
 public class AppViewModel extends AndroidViewModel {

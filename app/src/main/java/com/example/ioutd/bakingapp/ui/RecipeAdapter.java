@@ -22,7 +22,7 @@ import com.example.ioutd.bakingapp.utilities.Utils;
 import java.util.List;
 
 /**
- * Created by ioutd on 1/11/2018.
+ * Adapter for the Recipes in the MainActivity layout
  */
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {

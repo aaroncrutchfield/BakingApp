@@ -14,7 +14,7 @@ import com.example.ioutd.bakingapp.model.Ingredient;
 import java.util.List;
 
 /**
- * Created by ioutd on 1/18/2018.
+ * Adapter for the ingredients RecyclerView within the RecipeDetails layout
  */
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientsViewHolder> {

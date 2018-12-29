@@ -10,7 +10,7 @@ import com.example.ioutd.bakingapp.model.Recipe;
 import com.example.ioutd.bakingapp.model.Step;
 
 /**
- * Created by ioutd on 2/1/2018.
+ * App database
  */
 
 @Database(entities = {Recipe.class, Ingredient.class, Step.class}, version = 13)

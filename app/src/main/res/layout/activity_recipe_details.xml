@@ -9,7 +9,9 @@
     tools:context=".ui.RecipeDetailsActivity">
 
 
-    <android.support.design.widget.AppBarLayout android:layout_width="match_parent"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/recipe_appbar_layout"
+        android:layout_width="match_parent"
         android:layout_height="250dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
         android:fitsSystemWindows="true"

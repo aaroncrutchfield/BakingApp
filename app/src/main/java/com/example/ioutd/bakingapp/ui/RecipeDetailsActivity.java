@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.data.AppViewModel;
 import com.example.ioutd.bakingapp.model.Step;
+import com.example.ioutd.bakingapp.utilities.SharedPrefs;
 import com.example.ioutd.bakingapp.utilities.Utils;
 
 import butterknife.BindView;
@@ -53,7 +54,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
 
         int recipeID = intent.getIntExtra(RECIPE_ID, -1);
         final int stepID = intent.getIntExtra(STEP_ID, -1);
-        recipeName = intent.getStringExtra(RECIPE_NAME);
+        recipeName = SharedPrefs.loadRecipeName(this);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

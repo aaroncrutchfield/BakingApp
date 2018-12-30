@@ -201,7 +201,6 @@ public class StepDetailsFragment extends Fragment {
             // Prepare the SimpleExoPlayer with the MediaSource and setPlayWhenReady = true
             exoPlayer.prepare(mediaSource);
             exoPlayer.seekTo(contentPosition);
-            exoPlayer.setPlayWhenReady(true);
         }
     }
 

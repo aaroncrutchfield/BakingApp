@@ -32,7 +32,7 @@ public class RecipeDetailsTest {
     private long contentPosition = 0;
 
     @Rule
-    public ActivityTestRule<RecipeDetailsActivity> mIntentsTestRule =
+    public ActivityTestRule<RecipeDetailsActivity> mActivityTestRule =
             new ActivityTestRule<RecipeDetailsActivity>(RecipeDetailsActivity.class){
                 @Override
                 protected Intent getActivityIntent() {
@@ -51,7 +51,7 @@ public class RecipeDetailsTest {
     public void init() {
         Fragment fragment = RecipeDetailsFragment.newInstance(recipeID, recipeName);
 
-        mIntentsTestRule.getActivity()
+        mActivityTestRule.getActivity()
                 .getSupportFragmentManager().beginTransaction()
                 .replace(R.id.recipe_details_container, fragment)
                 .commit();

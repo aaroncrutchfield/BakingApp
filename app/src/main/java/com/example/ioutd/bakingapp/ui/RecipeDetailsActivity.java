@@ -29,6 +29,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
     public static final String RECIPE_ID = "recipeID";
     public static final String RECIPE_NAME = "recipeName";
     public static final String STEP_ID = "stepID";
+    public static final String CONTENT_POSITION = "contentPosition";
 
     @Nullable
     @BindView(R.id.steps_container)
@@ -41,6 +42,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
     FragmentManager manager;
     AppViewModel appViewModel;
     String recipeName;
+    long contentPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
         int recipeID = intent.getIntExtra(RECIPE_ID, -1);
         final int stepID = intent.getIntExtra(STEP_ID, -1);
         recipeName = SharedPrefs.loadRecipeName(this);
+        contentPosition = intent.getLongExtra(CONTENT_POSITION, 0);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -69,7 +72,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
         loadRecipeDetailsFragment(recipeID, recipeName);
 
         if (stepsContainer != null) {
-            loadStepDetailsFragment(stepID);
+            loadStepDetailsFragment(stepID, contentPosition);
         }
 
     }
@@ -87,7 +90,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
     @Override
     public void onFragmentInteraction(int stepID) {
         if (stepsContainer != null) {
-            loadStepDetailsFragment(stepID);
+            loadStepDetailsFragment(stepID, contentPosition);
         } else {
             startStepDetailsActivity(stepID);
         }
@@ -111,11 +114,11 @@ public class RecipeDetailsActivity extends AppCompatActivity implements StepDeta
                 .commit();
     }
 
-    private void loadStepDetailsFragment(int stepID) {
+    private void loadStepDetailsFragment(int stepID, final long contentPosition) {
         appViewModel.getStepByStepID(stepID).observe(this, new Observer<Step>() {
             @Override
             public void onChanged(@Nullable Step step) {
-                Fragment fragment = StepDetailsFragment.newInstance(step);
+                Fragment fragment = StepDetailsFragment.newInstance(step, contentPosition);
                 manager.beginTransaction()
                         .replace(R.id.steps_container, fragment)
                         .commit();

@@ -3,7 +3,6 @@ package com.example.ioutd.bakingapp.ui;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -27,7 +26,6 @@ public class StepDetailsActivity extends AppCompatActivity implements StepDetail
 
     private static final String TAG = StepDetailsActivity.class.getSimpleName();
     public static final String STEP_ID = "stepID";
-    public static final String RECIPE_ID = "recipeID";
 
     ActionBar actionBar;
     int stepID;
@@ -61,7 +59,7 @@ public class StepDetailsActivity extends AppCompatActivity implements StepDetail
             @Override
             public void onChanged(@Nullable Step step) {
                 if (step != null) {
-                    Fragment fragment = StepDetailsFragment.newInstance(step);
+                    Fragment fragment = StepDetailsFragment.newInstance(step, contentPosition);
                     switch (caseKey) {
                         case 0:
                             manager.beginTransaction()
@@ -119,26 +117,6 @@ public class StepDetailsActivity extends AppCompatActivity implements StepDetail
     @OnClick(R.id.btn_previous)
     public void onPreviousBtn(View view){
         onPrevious();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        Log.d(TAG, "onConfigurationChanged: " + newConfig.orientation);
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Log.d(TAG, "onConfigurationChanged: Landscape");
-            int recipeID = getRecipeID(stepID);
-
-            Intent intent = new Intent(this, RecipeDetailsActivity.class);
-            intent.putExtra(RECIPE_ID, recipeID);
-            intent.putExtra(STEP_ID, stepID);
-
-            startActivity(intent);
-        }
-    }
-
-    private int getRecipeID(int stepID) {
-        return stepID/100;
     }
 
 }

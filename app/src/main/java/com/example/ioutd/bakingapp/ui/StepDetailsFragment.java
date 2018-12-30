@@ -1,6 +1,8 @@
 package com.example.ioutd.bakingapp.ui;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -54,10 +56,13 @@ public class StepDetailsFragment extends Fragment {
 
     SimpleExoPlayer exoPlayer;
 
+    public static final String CONTENT_POSITION = "contentPosition";
     private static final String STEP_OBJECT = "step_object";
+    public static final String STEP_ID = "stepID";
+    public static final String RECIPE_ID = "recipeID";
 
     private Step step;
-    private long contentPosition = 0;
+    private long contentPosition;
 
     private OnFragmentInteractionListener mListener;
     private Unbinder unbinder;
@@ -69,10 +74,11 @@ public class StepDetailsFragment extends Fragment {
     }
 
 
-    public static StepDetailsFragment newInstance(Step step) {
+    public static StepDetailsFragment newInstance(Step step, long contentPosition) {
         StepDetailsFragment fragment = new StepDetailsFragment();
         Bundle args = new Bundle();
         args.putParcelable(STEP_OBJECT, step);
+        args.putLong(CONTENT_POSITION, contentPosition);
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,12 +88,13 @@ public class StepDetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             step = (Step) getArguments().get(STEP_OBJECT);
+            contentPosition = (long) getArguments().get(CONTENT_POSITION);
             String shortDescription = step.getShortDescription().replace(".", "");
             ActionBar actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
             if (actionBar != null)
                 actionBar.setTitle(shortDescription);
         }
-    }
+        }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -96,8 +103,13 @@ public class StepDetailsFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
         setupVideoPlayer();
-
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        releasePlayer();
     }
 
     @Override
@@ -110,7 +122,8 @@ public class StepDetailsFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(STEP_OBJECT, step);
-        outState.putLong("content_position", contentPosition);
+        outState.putLong(CONTENT_POSITION, contentPosition);
+        Log.d(TAG, "onSaveInstanceState: "  + contentPosition);
     }
 
     @Override
@@ -118,7 +131,7 @@ public class StepDetailsFragment extends Fragment {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
             step = savedInstanceState.getParcelable(STEP_OBJECT);
-            contentPosition = savedInstanceState.getLong("content_position");
+            contentPosition = savedInstanceState.getLong(CONTENT_POSITION);
         }
     }
 
@@ -159,7 +172,6 @@ public class StepDetailsFragment extends Fragment {
 
                 // Initialize the player and pass in the video url
                 String stepVideoURL = step.getVideoURL();
-                Log.d(TAG, ": url= " + stepVideoURL);
                 if (stepVideoURL.equals("")){
                     epStepVideo.setVisibility(View.GONE);
                 } else {
@@ -189,6 +201,7 @@ public class StepDetailsFragment extends Fragment {
             // Prepare the SimpleExoPlayer with the MediaSource and setPlayWhenReady = true
             exoPlayer.prepare(mediaSource);
             exoPlayer.seekTo(contentPosition);
+            exoPlayer.setPlayWhenReady(true);
         }
     }
 
@@ -220,5 +233,25 @@ public class StepDetailsFragment extends Fragment {
         // TODO: Update argument type and name
         void onNext();
         void onPrevious();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        releasePlayer();
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            int stepID = step.getStepID();
+            int recipeID = getRecipeID(stepID);
+
+            Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
+            intent.putExtra(RECIPE_ID, recipeID);
+            intent.putExtra(STEP_ID, stepID);
+            intent.putExtra(CONTENT_POSITION, contentPosition);
+            startActivity(intent);
+        }
+    }
+
+    private int getRecipeID(int stepID) {
+        return stepID/100;
     }
 }

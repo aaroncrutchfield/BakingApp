@@ -1,8 +1,11 @@
 package com.example.ioutd.bakingapp.ui;
 
+import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,11 +20,13 @@ import android.view.ViewGroup;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.example.ioutd.bakingapp.IngredientsWidgetProvider;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.data.AppViewModel;
 import com.example.ioutd.bakingapp.model.Recipe;
 import com.example.ioutd.bakingapp.utilities.AppExecutors;
 import com.example.ioutd.bakingapp.utilities.JSONDataUtil;
+import com.example.ioutd.bakingapp.utilities.SharedPrefs;
 import com.example.ioutd.bakingapp.utilities.Utils;
 
 import org.json.JSONArray;
@@ -37,13 +42,17 @@ import butterknife.Unbinder;
  * Created by ioutd on 1/31/2018.
  */
 
-public class RecipeListFragment extends Fragment {
+public class RecipeListFragment extends Fragment implements RecipeAdapter.OnItemClickListener{
 
     @BindView(R.id.rv_recipes)
     RecyclerView rvRecipes;
 
     private Unbinder unbinder;
     GridLayoutManager layoutManager;
+
+    static final String RECIPE_ID = "recipeID";
+    static final String RECIPE_NAME = "recipeName";
+    static final String STEP_ID = "stepID";
 
     public RecipeListFragment(){
     }
@@ -115,7 +124,7 @@ public class RecipeListFragment extends Fragment {
     }
 
     private void initializeRecipesList() {
-        final RecipeAdapter recipeAdapter = new RecipeAdapter(getContext());
+        final RecipeAdapter recipeAdapter = new RecipeAdapter(getContext(), this);
 
         int spanCount = Utils.getScreenOrientation(getContext());
         layoutManager = new GridLayoutManager(getContext(), spanCount);
@@ -135,5 +144,38 @@ public class RecipeListFragment extends Fragment {
                 recipeAdapter.addRecipes(recipes);
             }
         });
+    }
+
+    @Override
+    public void onItemClick(Recipe recipe) {
+        startRecipeDetailsActivity(recipe);
+        updateWidgetRecipe();
+    }
+
+    private void startRecipeDetailsActivity(Recipe recipe) {
+        Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
+
+        SharedPrefs.saveRecipe(getContext(), recipe);
+
+        int recipeID = recipe.getId();
+        int stepID = getIntroStepID(recipeID);
+        String recipeName = recipe.getName();
+
+        intent.putExtra(RECIPE_ID, recipeID);
+        intent.putExtra(RECIPE_NAME, recipeName);
+        intent.putExtra(STEP_ID, stepID);
+
+        startActivity(intent);
+    }
+
+    private void updateWidgetRecipe() {
+        AppWidgetManager manager = getContext().getSystemService(AppWidgetManager.class);
+        int [] ids = manager.getAppWidgetIds(new ComponentName(getContext(), IngredientsWidgetProvider.class));
+
+        IngredientsWidgetProvider.updateAppWidgets(getContext(), manager, ids);
+    }
+
+    private int getIntroStepID(int recipeID) {
+        return recipeID * 100;
     }
 }

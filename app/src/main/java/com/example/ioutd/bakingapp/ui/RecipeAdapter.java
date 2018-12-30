@@ -1,9 +1,6 @@
 package com.example.ioutd.bakingapp.ui;
 
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -13,10 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.ioutd.bakingapp.IngredientsWidgetProvider;
 import com.example.ioutd.bakingapp.R;
 import com.example.ioutd.bakingapp.model.Recipe;
-import com.example.ioutd.bakingapp.utilities.SharedPrefs;
 import com.example.ioutd.bakingapp.utilities.Utils;
 
 import java.util.List;
@@ -30,10 +25,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     private static final String TAG = RecipeAdapter.class.getSimpleName();
 
     private Context context;
+    private OnItemClickListener listener;
     private List<Recipe> recipes;
 
-    RecipeAdapter(Context context) {
+    RecipeAdapter(Context context, OnItemClickListener listener) {
         this.context = context;
+        this.listener = listener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Recipe recipe);
     }
 
     @NonNull
@@ -47,18 +48,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     @Override
     public void onBindViewHolder(@NonNull final RecipeViewHolder holder, int position) {
-        Recipe recipe = recipes.get(position);
-
-        String recipeName = recipe.getName();
-        // Set the recipe name
-        holder.tvRecipeName.setText(recipeName);
-
-        loadRecipeImage(holder, recipeName);
-    }
-
-    private void loadRecipeImage(final RecipeViewHolder holder, String recipeName) {
-        Bitmap bitmap = Utils.loadAssetImage(context, recipeName);
-        holder.ivRecipeImage.setImageBitmap(bitmap);
+        holder.bind(recipes.get(position), listener);
     }
 
     @Override
@@ -74,54 +64,31 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     class RecipeViewHolder extends RecyclerView.ViewHolder {
 
-        static final String RECIPE_ID = "recipeID";
-        static final String RECIPE_NAME = "recipeName";
-        static final String STEP_ID = "stepID";
-
         ImageView ivRecipeImage;
         TextView tvRecipeName;
 
-        RecipeViewHolder(final View itemView) {
+        RecipeViewHolder(View itemView) {
             super(itemView);
             ivRecipeImage = itemView.findViewById(R.id.iv_recipe_image);
             tvRecipeName = itemView.findViewById(R.id.tv_recipe_name);
+        }
+
+        void bind(final Recipe recipe, final OnItemClickListener listener) {
+            String recipeName = recipe.getName();
+            tvRecipeName.setText(recipeName);
+            loadRecipeImage(recipeName);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                    startRecipeDetailsActivity();
-                    updateWidgetRecipe();
+                    listener.onItemClick(recipe);
                 }
             });
         }
 
-        private void updateWidgetRecipe() {
-            AppWidgetManager manager = context.getSystemService(AppWidgetManager.class);
-            int [] ids = manager.getAppWidgetIds(new ComponentName(context, IngredientsWidgetProvider.class));
-
-            IngredientsWidgetProvider.updateAppWidgets(context, manager, ids);
-        }
-
-        private void startRecipeDetailsActivity() {
-            Intent intent = new Intent(context, RecipeDetailsActivity.class);
-            Recipe recipe = recipes.get(getAdapterPosition());
-
-            SharedPrefs.saveRecipe(context, recipe);
-
-            int recipeID = recipe.getId();
-            int stepID = getIntroStepID(recipeID);
-            String recipeName = recipe.getName();
-
-            intent.putExtra(RECIPE_ID, recipeID);
-            intent.putExtra(RECIPE_NAME, recipeName);
-            intent.putExtra(STEP_ID, stepID);
-
-            context.startActivity(intent);
-        }
-
-        private int getIntroStepID(int recipeID) {
-            return recipeID * 100;
+        private void loadRecipeImage(String recipeName) {
+            Bitmap bitmap = Utils.loadAssetImage(context, recipeName);
+            ivRecipeImage.setImageBitmap(bitmap);
         }
     }
 }
